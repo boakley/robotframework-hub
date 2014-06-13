@@ -8,7 +8,6 @@ The hub currently provides the following services:
 
 * RESTful API for retrieving the documentation for all available
   keywords
-
 * Website for viewing the documentation for all keywords
   available on the system
 
