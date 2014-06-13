@@ -66,9 +66,9 @@ that on the command line:
 
 Presently, three uris are supported: 
 
-/api       - fetch JSON-formatted keyword data
-/doc       - UI for viewing keyword documentation
-/dashboard - a fairly useless (for now!) dashboard
+- /api       - fetch JSON-formatted keyword data
+- /doc       - UI for viewing keyword documentation
+- /dashboard - a fairly useless (for now!) dashboard
 
 ### Read keyword documentation
 
