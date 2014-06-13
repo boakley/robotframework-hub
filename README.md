@@ -24,12 +24,17 @@ The hub will eventually provide the following services:
 
 ### Download
 
-The hub is pip-installable, so get to a command prompt and run the
-following:
+Eventually the hub will be pip-installable, but in this early release
+you will need to download the source from this repository then install
+it with setup.py:
 
 ```
-    $ pip install robotframework-hub
+    $ cd /path/to/repository
+    $ python ./setup.py install 
 ```
+
+It is recommended that you use a virtualenv, though strictly speaking
+it's not necessary.
 
 ### Dependencies
 
