@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block body %}
+    <div class="well" id="left">
+      <ul class="list-group list-unstyled">
+        {% for item in data.hierarchy %}
+          {% if data.libdoc.name == item.name %}
+          <li>
+            <label class="tree-toggler nav-header">{{item.name}}</label>
+            <ul class="list-group list-unstyled tree">
+          {% else %}
+          <li>
+            <label class="tree-toggler nav-header">{{item.name}}</label>
+            <ul class="list-group list-unstyled tree collapse" >
+          {% endif %}
+              {% for kw in item.keywords %}
+                <!-- FIXME: I should move the inline style to a stylesheet... -->
+                <li style="margin-left: 10px">
+                  <!-- this is wrong: I shouldn't be building URLs like htis... -->
+                  <a href='{{kw.url}}'>{{kw.name}}</a></li>
+              {% endfor %}
+            </ul>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>   
+
+    <div class="well" id="right">
+    {% block content %}{% endblock %}
+    </div>
+
+    <script>
+      jQuery.fn.scrollTo = function(elem, speed) { 
+          $(this).animate({
+              scrollTop:  $(this).scrollTop() - $(this).offset().top + 
+              $(elem).offset().top - 10
+          }, speed == undefined ? 500 : speed); 
+          return this; 
+      };
+    </script>
+    <script>
+      $(document).ready(function () {
+          $('label.tree-toggler').click(function () {
+              $(this).parent().children('ul.tree').toggle(200);
+          });
+          $("#right").scrollTo("#{{data['target']}}");
+      });      
+    </script>
+{% endblock %}

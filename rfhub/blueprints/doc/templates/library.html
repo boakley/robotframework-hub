@@ -1,0 +1,23 @@
+{% extends "twocolumn.html" %}
+{% block content %}
+<h1>{{data.libdoc.name}}</h1>
+Version: {{data.libdoc.version}} 
+&#x2022 Scope: {{data.libdoc.scope}} 
+<!-- &#x2022 Named Arguments: {{data.libdoc.namesargs}} -->
+<h2>Introduction</h2>
+{% autoescape false %}
+{{ data.libdoc.doc }}
+{% endautoescape %}
+<table class=example border=1>
+  <tr><th>Keywords</th><th>Arguments</th><th>Documentation</th></tr>
+  {% for item in data.keywords %}
+  {% autoescape false %}
+  <tr id='kw-{{item[0]|replace(' ','-')|lower()}}'>
+    <td valign='top'><b>{{item[0]}}</b></td>
+    <td valign='top'>{{item[1]}}</td>
+    <td valign='top'>{{item[2]}}</td>
+  </tr>
+  {% endautoescape %}
+  {% endfor %}
+</table>
+{% endblock %}

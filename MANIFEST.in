@@ -1,0 +1,7 @@
+include README.md
+recursive-include rfhub/blueprints/doc/static *
+recursive-include rfhub/blueprints/doc/templates *.html
+recursive-include rfhub/blueprints/dashboard/templates *.html
+recursive-include rfhub/static *
+recursive-exclude rfhub *~ #*#
+
