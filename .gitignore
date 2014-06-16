@@ -37,14 +37,6 @@ coverage.xml
 # Translations
 *.mo
 
-# Mr Developer
-.mr.developer.cfg
-.project
-.pydevproject
-
-# Rope
-.ropeproject
-
 # Django stuff:
 *.log
 *.pot
@@ -52,3 +44,12 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 
+# emacs crud
+\#*\#
+*.elc
+*~
+
+# robot logs. 
+log.html
+report.html
+output.xml
