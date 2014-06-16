@@ -22,11 +22,17 @@ The hub will eventually provide the following services:
 
 ## How to install and run the hub
 
-### Download
+After installation you will have a new module named "rfhub". 
 
-Eventually the hub will be pip-installable, but in this early release
-you will need to download the source from this repository then install
-it with setup.py:
+### Using pip
+
+```
+    $ pip install robotframework-hub
+```
+
+### Install using the source
+
+cd to where the source code is located, then run setup.py:
 
 ```
     $ cd /path/to/repository
@@ -95,4 +101,7 @@ the "/api" url. For example:
 - http://localhost:7070/api/keywords?pattern=Should*
                      
 
-    
+## Acknowledgements
+
+A huge thank-you to Echo Global Logistics (echo.com) for supporting
+the development of this package.
