@@ -70,7 +70,7 @@ class KeywordTable(object):
         '''
             
         if os.path.isdir(name):
-            if (not name.startswith(".")):
+            if (not os.path.basename(name).startswith(".")):
                 self.add_folder(name)
 
         elif os.path.isfile(name):
