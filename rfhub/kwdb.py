@@ -183,12 +183,19 @@ class KeywordTable(object):
         # the user accidentally starts up the hub giving the same 
         # folder, or a folder and it's children, on the command line...
         if watch:
+            # add watcher on normalized path
+            dirname = os.path.abspath(dirname)
             event_handler = WatchdogHandler(self, dirname)
             self.observer.schedule(event_handler, dirname, recursive=True)
 
     def add_collection(self, path, c_name, c_type, c_doc, c_version="unknown", 
                        c_scope="", c_namedargs="yes", c_doc_format="ROBOT"):
         '''Insert data into the collection table'''
+        if path is not None:
+            # We want to store the normalized form of the path in the
+            # database
+            path = os.path.abspath(path)
+
         cursor = self.db.cursor()
         cursor.execute('''
             INSERT OR REPLACE INTO collection_table 
