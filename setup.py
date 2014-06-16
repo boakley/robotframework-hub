@@ -1,16 +1,14 @@
 from setuptools import setup
 
-import rfhub
-
 setup(
-    name             ='robotframework-hub',
-    version          = rfhub.__version__,
-    author           ='Bryan Oakley',
-    author_email     ='bryan.oakley@gmail.com',
-    url              ='https://github.com/boakley/robotframework-hub/',
+    name             = 'robotframework-hub',
+    version          = "0.2",
+    author           = 'Bryan Oakley',
+    author_email     = 'bryan.oakley@gmail.com',
+    url              = 'https://github.com/boakley/robotframework-hub/',
     keywords         = 'robotframework',
-    license          ='Apache License 2.0',
-    description      ='Webserver for robot framework assets',
+    license          = 'Apache License 2.0',
+    description      = 'Webserver for robot framework assets',
     long_description = open('README.md').read(),
     zip_safe         = False,
     include_package_data = True,

@@ -1,4 +1,5 @@
-__version__ = 0.1
+import pkg_resources
+__version__ = pkg_resources.require("robotframework-hub")[0].version
 
 import kwdb
 
