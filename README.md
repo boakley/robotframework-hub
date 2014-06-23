@@ -29,7 +29,7 @@ line:
 
 ## Websites
 
-Source code and additional documentation can be found here:
+Source code, screenshots, and additional documentation can be found here:
 
  * Source code: https://github.com/boakley/robotframework-hub
  * Project wiki: https://github.com/boakley/robotframework-hub/wiki
