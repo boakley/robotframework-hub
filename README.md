@@ -20,6 +20,9 @@ The hub will eventually provide the following services:
 * RESTful API for all of the above
 * Plug-in architecture
 
+
+For more documentation see https://github.com/boakley/robotframework-hub/wiki
+
 ## How to install and run the hub
 
 After installation you will have a new module named "rfhub". 
@@ -88,7 +91,7 @@ Keyword documentation is available with URls like the following:
 - http://localhost:7070/doc/keywords/
 - http://localhost:7070/doc/keywords/BuiltIn/
 - http://localhost:7070/doc/keywords/BuiltIn/Evaluate
-- http://localhost:7070/doc/keywords?patter=Should
+- http://localhost:7070/doc/keywords?pattern=Should
 
 ### Get JSON data for keywords
 
