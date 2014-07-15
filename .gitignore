@@ -53,3 +53,7 @@ docs/_build/
 log.html
 report.html
 output.xml
+selenium-screenshot-*.png
+
+# mac crud
+.DS_Store
