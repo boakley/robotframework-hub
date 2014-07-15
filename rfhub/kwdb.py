@@ -383,7 +383,8 @@ class KeywordTable(object):
 
         '''
 
-        sql = '''SELECT collection.name, keyword.name, keyword.doc
+        sql = '''SELECT collection.name, 
+                        keyword.name, keyword.doc, keyword.args
                  FROM collection_table as collection
                  JOIN keyword_table as keyword
                  WHERE collection.collection_id == keyword.collection_id
@@ -392,7 +393,7 @@ class KeywordTable(object):
              '''
         pattern = self._glob_to_sql(pattern)
         cursor = self._execute(sql, (pattern,))
-        result = [(row[0], row[1], row[2].strip().split("\n")[0]) 
+        result = [(row[0], row[1], row[2], row[3]) 
                   for row in cursor.fetchall()]
         return list(set(result))
 
