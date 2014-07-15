@@ -19,7 +19,6 @@ class RobotHub(object):
 
         self.kwdb = KeywordTable()
         self.app = flask.Flask(__name__)
-#        self.app.config['DEBUG'] = True
 
         with self.app.app_context():
             current_app.kwdb = self.kwdb
