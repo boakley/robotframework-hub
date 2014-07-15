@@ -1,5 +1,5 @@
 import pkg_resources
-__version__ = pkg_resources.require("robotframework-hub")[0].version
+from .version import __version__
 
 import kwdb
 

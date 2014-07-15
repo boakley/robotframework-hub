@@ -1,8 +1,10 @@
 from setuptools import setup
 
+execfile('rfhub/version.py')
+
 setup(
     name             = 'robotframework-hub',
-    version          = "0.2",
+    version          = __version__,
     author           = 'Bryan Oakley',
     author_email     = 'bryan.oakley@gmail.com',
     url              = 'https://github.com/boakley/robotframework-hub/',
