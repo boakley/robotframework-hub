@@ -1,5 +1,7 @@
 import flask
 from flask import current_app
+from robot.libdocpkg.htmlwriter import DocToHtml
+
 
 blueprint = flask.Blueprint('api', __name__)
 
@@ -18,18 +20,26 @@ def get_library_keywords(library):
     keywords = kwdb.get_keywords(query_pattern)
     result = []
     library = library.strip().lower()
-    for (keyword_library, keyword_name, keyword_synopsis) in keywords:
+    for (keyword_library, keyword_name, keyword_doc, keyword_args) in keywords:
         if library == "" or library == keyword_library.strip().lower():
-            kw_url = flask.url_for(".get_library_keyword", 
-                                   library=keyword_library, 
-                                   keyword=keyword_name)
-            lib_url = flask.url_for(".get_library_keywords",
-                                    library=keyword_library)
+            api_kw_url = flask.url_for(".get_library_keyword", 
+                                       library=keyword_library, 
+                                       keyword=keyword_name)
+            api_lib_url = flask.url_for(".get_library_keywords",
+                                        library=keyword_library)
+            try:
+                htmldoc = DocToHtml("ROBOT")(keyword_doc)
+            except Exception, e:
+                htmldoc = "bummer"
+
             result.append({"library": keyword_library, 
                            "name": keyword_name, 
-                           "synopsis": keyword_synopsis,
-                           "keyword_url": kw_url,
-                           "library_url": lib_url})
+                           "synopsis": keyword_doc.strip().split("\n")[0],
+                           "doc": keyword_doc,
+                           "htmldoc": htmldoc,
+                           "args": keyword_args,
+                           "api_keyword_url": api_kw_url,
+                           "api_library_url": api_lib_url})
     return flask.jsonify(keywords=result)
 
 @blueprint.route("/keywords/<library>/<keyword>")
