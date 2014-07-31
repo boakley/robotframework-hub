@@ -1,4 +1,4 @@
-'''Flask blueprint for showing keyword documentation'''
+"""Flask blueprint for showing keyword documentation"""
 
 import flask
 from flask import current_app
@@ -10,14 +10,14 @@ blueprint = flask.Blueprint('doc', __name__,
 
 @blueprint.route("/")
 def doc():
-    '''Show a list of libraries, along with the nav panel on the left'''
+    """Show a list of libraries, along with the nav panel on the left"""
     kwdb = current_app.kwdb
 
     libraries = get_collections(kwdb, libtype="library")
     resource_files = get_collections(kwdb, libtype="resource")
     hierarchy = get_navpanel_data(kwdb)
 
-    return flask.render_template("home.html", 
+    return flask.render_template("home.html",
                                  data={"libraries": libraries,
                                        "libdoc": None,
                                        "hierarchy": hierarchy,
@@ -26,7 +26,7 @@ def doc():
 
 @blueprint.route("/keywords/")
 def search():
-    '''Show all keywords that match a pattern'''
+    """Show all keywords that match a pattern"""
     kwdb = current_app.kwdb
 
     pattern = flask.request.args.get('pattern', "*").strip().lower()
@@ -49,7 +49,7 @@ def search():
 
 # Flask docs imply I can leave the slash off (which I want
 # to do for the .../keyword variant). When I do, a URL like
-# /doc/BuiltIn/Evaluate gets redirected to the one with a 
+# /doc/BuiltIn/Evaluate gets redirected to the one with a
 # trailing slash, which then gives a 404 since the slash
 # is invalid. WTF?
 @blueprint.route("/keywords/<library>/<keyword>/")
@@ -81,7 +81,7 @@ def doc_for_library(library, keyword=""):
                                        "hierarchy": hierarchy})
 
 def get_collections(kwdb, libtype="*"):
-    '''Get list of collections from kwdb, then add urls necessary for hyperlinks'''
+    """Get list of collections from kwdb, then add urls necessary for hyperlinks"""
     collections = []
     for result in kwdb.get_collections(libtype=libtype):
         url = flask.url_for(".doc_for_library", library=result["name"])
@@ -90,12 +90,12 @@ def get_collections(kwdb, libtype="*"):
     return collections
 
 def get_navpanel_data(kwdb):
-    '''Get navpanel data from kwdb, and add urls necessary for hyperlinks'''
+    """Get navpanel data from kwdb, and add urls necessary for hyperlinks"""
     data = kwdb.get_keyword_hierarchy()
     for library in data:
         for keyword in library["keywords"]:
-            url = flask.url_for(".doc_for_library", 
-                                library=library["name"], 
+            url = flask.url_for(".doc_for_library",
+                                library=library["name"],
                                 keyword=keyword["name"])
             keyword["url"] = url
 
@@ -103,7 +103,7 @@ def get_navpanel_data(kwdb):
 
 
 def doc_to_html(doc, doc_format="ROBOT"):
-    '''Convert documentation to HTML'''
+    """Convert documentation to HTML"""
     from robot.libdocpkg.htmlwriter import DocToHtml
     return DocToHtml(doc_format)(doc)
-    
+

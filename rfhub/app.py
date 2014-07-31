@@ -5,7 +5,7 @@ from flask import current_app
 import blueprints
 
 class RobotHub(object):
-    '''Robot hub - website for REST and HTTP access to robot files'''
+    """Robot hub - website for REST and HTTP access to robot files"""
     def __init__(self):
 
         # N.B. this seems to take < 200ms to load up a
@@ -32,14 +32,14 @@ class RobotHub(object):
         self.app.register_blueprint(blueprints.dashboard, url_prefix="/dashboard")
 
     def start(self):
-        '''Start the app'''
+        """Start the app"""
         self.app.run(port=self.opts.port, debug=self.opts.debug)
 
     def _root(self):
         return flask.redirect(flask.url_for('dashboard.home'))
-        
+
     def _ping(self):
-        '''This function is called via the /ping url'''
+        """This function is called via the /ping url"""
         return "pong"
 
     def _load_keyword_data(self, args):
