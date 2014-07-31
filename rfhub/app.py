@@ -1,5 +1,5 @@
 import flask
-from optparse import OptionParser
+from argparse import ArgumentParser
 from kwdb import KeywordTable
 from flask import current_app
 import blueprints
@@ -10,12 +10,13 @@ class RobotHub(object):
 
         # N.B. this seems to take < 200ms to load up a
         # decent number of files. I can live with that
-        op = OptionParser()
-        op.add_option("-s", "--serve", action="store_true", default=False)
-        op.add_option("-p", "--port", default=7070, type="int")
-        op.add_option("-D", "--debug", action="store_true", default=False)
+        parser = ArgumentParser()
+        parser.add_argument("-s", "--serve", action="store_true", default=False)
+        parser.add_argument("-p", "--port", default=7070, type=int)
+        parser.add_argument("-D", "--debug", action="store_true", default=False)
+        parser.add_argument("paths", nargs="*")
 
-        self.opts, args = op.parse_args()
+        self.args = parser.parse_args()
 
         self.kwdb = KeywordTable()
         self.app = flask.Flask(__name__)
@@ -23,7 +24,7 @@ class RobotHub(object):
         with self.app.app_context():
             current_app.kwdb = self.kwdb
 
-        self._load_keyword_data(args)
+        self._load_keyword_data(self.args.paths)
 
         self.app.add_url_rule("/", "home", self._root)
         self.app.add_url_rule("/ping", "ping", self._ping)
@@ -42,10 +43,10 @@ class RobotHub(object):
         """This function is called via the /ping url"""
         return "pong"
 
-    def _load_keyword_data(self, args):
+    def _load_keyword_data(self, paths):
         self.kwdb.add_installed_libraries()
 
-        for path in args:
+        for path in paths:
             try:
                 self.kwdb.add(path)
             except Exception as e:
