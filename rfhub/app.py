@@ -34,7 +34,7 @@ class RobotHub(object):
 
     def start(self):
         """Start the app"""
-        self.app.run(port=self.opts.port, debug=self.opts.debug)
+        self.app.run(port=self.args.port, debug=self.args.debug)
 
     def _root(self):
         return flask.redirect(flask.url_for('dashboard.home'))
