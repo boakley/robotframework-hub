@@ -14,6 +14,7 @@ class RobotHub(object):
         parser.add_argument("-s", "--serve", action="store_true", default=False)
         parser.add_argument("-p", "--port", default=7070, type=int)
         parser.add_argument("-D", "--debug", action="store_true", default=False)
+        parser.add_argument("--no-installed-keywords", action="store_true", default=False)
         parser.add_argument("paths", nargs="*")
 
         self.args = parser.parse_args()
@@ -24,7 +25,7 @@ class RobotHub(object):
         with self.app.app_context():
             current_app.kwdb = self.kwdb
 
-        self._load_keyword_data(self.args.paths)
+        self._load_keyword_data(self.args.paths, self.args.no_installed_keywords)
 
         self.app.add_url_rule("/", "home", self._root)
         self.app.add_url_rule("/ping", "ping", self._ping)
@@ -43,8 +44,9 @@ class RobotHub(object):
         """This function is called via the /ping url"""
         return "pong"
 
-    def _load_keyword_data(self, paths):
-        self.kwdb.add_installed_libraries()
+    def _load_keyword_data(self, paths, no_install_keywords):
+        if not no_install_keywords:
+            self.kwdb.add_installed_libraries()
 
         for path in paths:
             try:
