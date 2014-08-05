@@ -1,0 +1,47 @@
+body, html {
+    margin: 0;
+    padding-top: 60px;
+    overflow: hidden;
+    height: 100%;
+}
+
+#left {
+    position: absolute;
+    top: 60px;
+    bottom: 0;
+    height: 90%;
+    width: 20%;
+    overflow-y: scroll;
+}
+
+#fullpage {
+    position: absolute;
+    top: 60px;
+    bottom: 0;
+    right: 0;
+    overflow-y: scroll;
+    height: 90%;
+    width: 100%;
+}
+
+#right {
+    position: absolute;
+    top: 60px;
+    bottom: 0;
+    right: 0;
+    overflow-y: scroll;
+    height: 90%;
+    width: 80%;
+}
+
+table.padded-table {
+    margin-left: 10px;
+}
+table td {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+table th {
+    padding-left: 10px;
+}
+
