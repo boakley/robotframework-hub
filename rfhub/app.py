@@ -11,7 +11,7 @@ class RobotHub(object):
         # N.B. this seems to take < 200ms to load up a
         # decent number of files. I can live with that
         parser = ArgumentParser()
-        parser.add_argument("-s", "--serve", action="store_true", default=False)
+        parser.add_argument("-i", "--interface", default="127.0.0.1")
         parser.add_argument("-p", "--port", default=7070, type=int)
         parser.add_argument("-D", "--debug", action="store_true", default=False)
         parser.add_argument("--no-installed-keywords", action="store_true", default=False)
@@ -35,7 +35,7 @@ class RobotHub(object):
 
     def start(self):
         """Start the app"""
-        self.app.run(port=self.args.port, debug=self.args.debug)
+        self.app.run(port=self.args.port, debug=self.args.debug, host=self.args.interface)
 
     def _root(self):
         return flask.redirect(flask.url_for('dashboard.home'))
