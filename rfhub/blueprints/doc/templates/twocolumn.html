@@ -13,8 +13,7 @@
               <ul class="list-group list-unstyled tree collapse" >
           {% endif %}
           {% for kw in item.keywords %}
-            <!-- FIXME: I should move the inline style to a stylesheet... -->
-            <li style="margin-left: 10px">
+            <li class="keyword">
               <!-- this is wrong: I shouldn't be building URLs like htis... -->
               <a href='{{kw.url}}'>{{kw.name}}</a>
             </li>
