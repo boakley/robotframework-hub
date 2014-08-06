@@ -4,10 +4,14 @@ $(document).ready(function () {
       $(this).parent().children('ul.tree').toggle(200);
   });
 
-  $('#search-pattern').on('input change', function (e) {
-    $.get('/doc/keywords', {pattern: $(e.target).val()})
-      .done(function (data) {
-        $('#right').html(data);
-      })
-  });
+  var fetchKeywords = function (e) {
+    var postData = { pattern: $(e.target).val() }
+    $.get('/doc/keywords', postData)
+      .done(function (responseData) {
+        $('#right').html(responseData);
+      });
+    }
+
+  $('#search-pattern').on('input change', _.debounce(fetchKeywords, 200));
+
 });
