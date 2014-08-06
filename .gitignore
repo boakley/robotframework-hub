@@ -46,6 +46,7 @@ docs/_build/
 
 # emacs crud
 \#*\#
+\.\#*
 *.elc
 *~
 
