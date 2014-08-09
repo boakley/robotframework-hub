@@ -4,14 +4,24 @@ $(document).ready(function () {
       $(this).parent().children('ul.tree').toggle(200);
   });
 
-  var fetchKeywords = function (e) {
-    var postData = { pattern: $(e.target).val() }
-    $.get('/doc/keywords', postData)
+  var renderKeywords = function (pattern) {
+    $.get('/doc/keywords', { pattern: pattern})
       .done(function (responseData) {
         $('#right').html(responseData);
       });
-    }
+  }
 
-  $('#search-pattern').on('input change', _.debounce(fetchKeywords, 200));
+  var refreshKeywords = function (e) {
+    pattern = $(e.target).val()
+    history.pushState({}, '', '?pattern=' + pattern)
+    renderKeywords(pattern);
+  }
+
+  $('#search-pattern').on('input change', _.debounce(refreshKeywords, 200));
+
+  params = queryString.parse(location.search)
+  if (params.pattern) {
+    renderKeywords(params.pattern)
+  }
 
 });
