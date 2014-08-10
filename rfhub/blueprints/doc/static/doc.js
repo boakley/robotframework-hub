@@ -5,10 +5,17 @@ $(document).ready(function () {
   });
 
   var renderKeywords = function (pattern) {
-    $.get('/doc/keywords', { pattern: pattern })
-      .done(function (responseData) {
-        $('#right').html(responseData);
-      });
+    if (! _.isEmpty(pattern)) {
+      $.get('/doc/keywords', { pattern: pattern })
+        .done(function (responseData) {
+          $('#right').html(responseData);
+        });
+    } else {
+      $.get('/doc/index')
+        .done(function (responseData) {
+          $('#right').html(responseData);
+        });
+    }
   }
 
   var refreshKeywords = function (e) {
@@ -25,14 +32,14 @@ $(document).ready(function () {
 
   $(window).on('popstate', function (e) {
     var state = e.originalEvent.state;
-    if (state) {
+    if (! _.isEmpty(state)) {
       renderKeywords(state.pattern);
       setSearchFieldValue(state.pattern);
     }
   });
 
   var params = queryString.parse(location.search);
-  if (params.pattern) {
+  if (! _.isEmpty(params.pattern)) {
     renderKeywords(params.pattern)
     setSearchFieldValue(state.pattern);
   }
