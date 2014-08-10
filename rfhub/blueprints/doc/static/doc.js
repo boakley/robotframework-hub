@@ -32,16 +32,15 @@ $(document).ready(function () {
 
   $(window).on('popstate', function (e) {
     var state = e.originalEvent.state;
-    if (! _.isEmpty(state)) {
-      renderKeywords(state.pattern);
-      setSearchFieldValue(state.pattern);
-    }
+    var pattern = state === null ? '' : state.pattern;
+    renderKeywords(pattern);
+    setSearchFieldValue(pattern);
   });
 
   var params = queryString.parse(location.search);
   if (! _.isEmpty(params.pattern)) {
-    renderKeywords(params.pattern)
-    setSearchFieldValue(state.pattern);
+    renderKeywords(params.pattern);
+    setSearchFieldValue(params.pattern);
   }
 
 });
