@@ -5,23 +5,36 @@ $(document).ready(function () {
   });
 
   var renderKeywords = function (pattern) {
-    $.get('/doc/keywords', { pattern: pattern})
+    $.get('/doc/keywords', { pattern: pattern })
       .done(function (responseData) {
         $('#right').html(responseData);
       });
   }
 
   var refreshKeywords = function (e) {
-    pattern = $(e.target).val()
-    history.pushState({}, '', '?pattern=' + pattern)
+    var pattern = $(e.target).val();
+    history.pushState({ pattern: pattern }, '', '?pattern=' + pattern);
     renderKeywords(pattern);
+  }
+
+  var setSearchFieldValue = function (newValue) {
+    $('#search-pattern').val(newValue);
   }
 
   $('#search-pattern').on('input change', _.debounce(refreshKeywords, 200));
 
-  params = queryString.parse(location.search)
+  $(window).on('popstate', function (e) {
+    var state = e.originalEvent.state;
+    if (state) {
+      renderKeywords(state.pattern);
+      setSearchFieldValue(state.pattern);
+    }
+  });
+
+  var params = queryString.parse(location.search);
   if (params.pattern) {
     renderKeywords(params.pattern)
+    setSearchFieldValue(state.pattern);
   }
 
 });
