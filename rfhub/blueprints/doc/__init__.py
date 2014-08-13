@@ -76,7 +76,8 @@ def doc_for_library(library, keyword=""):
         # then convert that to a string
         args = ", ".join(json.loads(args))
         doc = doc_to_html(doc)
-        keywords.append((name, args, doc))
+        target = name == keyword
+        keywords.append((name, args, doc, target))
 
     # this is the introduction documentation for the library
     libdoc = kwdb.get_collection(library)
@@ -85,11 +86,8 @@ def doc_for_library(library, keyword=""):
     # this data is necessary for the nav panel
     hierarchy = get_navpanel_data(kwdb)
 
-    target = "kw-" + keyword.lower().replace(" ","-")
-
     return flask.render_template("library.html",
-                                 data={"target": target,
-                                       "keywords": keywords,
+                                 data={"keywords": keywords,
                                        "libdoc": libdoc,
                                        "hierarchy": hierarchy})
 
