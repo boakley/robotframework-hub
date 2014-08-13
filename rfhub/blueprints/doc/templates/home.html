@@ -1,20 +1,4 @@
 {% extends "twocolumn.html" %}
 {% block content %}
-<div>
-  <h1>Libraries</h1>
-  <table>
-    {% for item in data["libraries"] %}
-    <tr><td><a href="{{item[1]}}">{{item[0]}}</a></td><td>{{item[2]}}</td></tr>
-    {% endfor %}
-  </table>
-</div>
-
-<h1>Resource Files</h1>
-<div>
-  <table>
-    {% for item in data["resource_files"] %}
-    <tr><td><a href="{{item[1]}}">{{item[0]}}</a></td><td>{{item[2]}}</td></tr>
-    {% endfor %}
-  </table>
-</div>
+{% include 'libraryNames.html' %}
 {% endblock %}

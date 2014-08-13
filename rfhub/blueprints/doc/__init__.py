@@ -24,15 +24,28 @@ def doc():
                                        "resource_files": resource_files
                                    })
 
+
+@blueprint.route("/index")
+def index():
+    """Show a list of available libraries, and resource files"""
+    kwdb = current_app.kwdb
+
+    libraries = get_collections(kwdb, libtype="library")
+    resource_files = get_collections(kwdb, libtype="resource")
+
+    return flask.render_template("libraryNames.html",
+                                 data={"libraries": libraries,
+                                       "resource_files": resource_files
+                                   })
+
 @blueprint.route("/keywords/")
 def search():
     """Show all keywords that match a pattern"""
-    kwdb = current_app.kwdb
-
     pattern = flask.request.args.get('pattern', "*").strip().lower()
+
     keywords = []
 
-    for keyword in kwdb.search(pattern):
+    for keyword in current_app.kwdb.search(pattern):
         kw = list(keyword)
         url = flask.url_for(".doc_for_library", library=kw[0], keyword=kw[1])
         keywords.append({"collection": keyword[0],
@@ -63,7 +76,8 @@ def doc_for_library(library, keyword=""):
         # then convert that to a string
         args = ", ".join(json.loads(args))
         doc = doc_to_html(doc)
-        keywords.append((name, args, doc))
+        target = name == keyword
+        keywords.append((name, args, doc, target))
 
     # this is the introduction documentation for the library
     libdoc = kwdb.get_collection(library)
@@ -72,11 +86,8 @@ def doc_for_library(library, keyword=""):
     # this data is necessary for the nav panel
     hierarchy = get_navpanel_data(kwdb)
 
-    target = "kw-" + keyword.lower().replace(" ","-")
-
     return flask.render_template("library.html",
-                                 data={"target": target,
-                                       "keywords": keywords,
+                                 data={"keywords": keywords,
                                        "libdoc": libdoc,
                                        "hierarchy": hierarchy})
 
@@ -106,4 +117,3 @@ def doc_to_html(doc, doc_format="ROBOT"):
     """Convert documentation to HTML"""
     from robot.libdocpkg.htmlwriter import DocToHtml
     return DocToHtml(doc_format)(doc)
-
