@@ -9,6 +9,7 @@ blueprint = flask.Blueprint('doc', __name__,
                             static_folder="static")
 
 @blueprint.route("/")
+@blueprint.route("/keywords/")
 def doc():
     """Show a list of libraries, along with the nav panel on the left"""
     kwdb = current_app.kwdb
@@ -38,7 +39,8 @@ def index():
                                        "resource_files": resource_files
                                    })
 
-@blueprint.route("/keywords/")
+
+@blueprint.route("/search/")
 def search():
     """Show all keywords that match a pattern"""
     pattern = flask.request.args.get('pattern', "*").strip().lower()

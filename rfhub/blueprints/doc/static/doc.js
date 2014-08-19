@@ -12,7 +12,7 @@ $(document).ready(function () {
 
   var renderKeywords = function (pattern) {
     if (! _.isEmpty(pattern)) {
-      $.get('/doc/keywords', { pattern: pattern })
+      $.get('/doc/search', { pattern: pattern })
         .done(function (responseData) {
           $('#right').html(responseData);
         });
