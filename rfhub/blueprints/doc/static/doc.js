@@ -30,12 +30,10 @@ $(document).ready(function () {
 
   function refreshKeywords(e) {
     var pattern = $(e.target).val();
-    var url;
-    var queryParam = '?pattern=' + pattern
-    if (endsWith(window.location.pathname, 'doc/') || endsWith(window.location.pathname, 'keywords/'))
-      url = queryParam;
-    else
-      url = '/doc/keywords/' + queryParam
+    var url = '/doc/keywords/'
+    if (!_.isEmpty(pattern)) {
+      url = url + '?pattern=' + pattern;
+    }
     history.pushState({ pattern: pattern }, '', url);
     renderKeywords(pattern);
   }
