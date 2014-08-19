@@ -10,7 +10,11 @@ $(document).ready(function () {
       $(this).parent().children('ul.tree').toggle(200);
   });
 
-  var renderKeywords = function (pattern) {
+  function endsWith(str, suffix) {
+    return str.indexOf(suffix, str.length - suffix.length) !== -1;
+  }
+
+  function renderKeywords(pattern) {
     if (! _.isEmpty(pattern)) {
       $.get('/doc/search', { pattern: pattern })
         .done(function (responseData) {
@@ -24,13 +28,19 @@ $(document).ready(function () {
     }
   }
 
-  var refreshKeywords = function (e) {
+  function refreshKeywords(e) {
     var pattern = $(e.target).val();
-    history.pushState({ pattern: pattern }, '', '?pattern=' + pattern);
+    var url;
+    var queryParam = '?pattern=' + pattern
+    if (endsWith(window.location.pathname, 'doc/') || endsWith(window.location.pathname, 'keywords/'))
+      url = queryParam;
+    else
+      url = '/doc/keywords/' + queryParam
+    history.pushState({ pattern: pattern }, '', url);
     renderKeywords(pattern);
   }
 
-  var setSearchFieldValue = function (newValue) {
+  function setSearchFieldValue(newValue) {
     $('#search-pattern').val(newValue);
   }
 
