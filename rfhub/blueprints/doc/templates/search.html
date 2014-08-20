@@ -1,10 +1,13 @@
 <div>
   <h1>Search results</h1>
-  <p>Searching for '{{data.pattern}}' found {{data.keywords|length}} keywords</p>
-  <table class="table-striped table-hover" border=0 width=100%>
-    <tr><th>Library/Resource</th><th>Keyword Name</th><th>Synopsis</th></tr>
+  <p id='result-count'>Searching for '{{data.pattern}}' found {{data.keywords|length}} keywords</p>
+  <table id='keyword-table' class="table-striped table-hover" border=0 width=100%>
+    <thead>
+      <tr><th>Library/Resource</th><th>Keyword Name</th><th>Synopsis</th></tr>
+    </thead>
+    <tbody>
     {% for item in data.keywords %}
-      <tr>
+      <tr id='{{item.row_id}}'>
         <td>{{item.collection}}</td>
         <td><a href="{{item.url}}">{{item.name}}</a></td>
         {% if item.synopsis == "" %}
@@ -14,5 +17,6 @@
         {% endif %}
       </tr>
     {% endfor %}
+    </tbody>
   </table>
 </div>
