@@ -50,10 +50,13 @@ def search():
     for keyword in current_app.kwdb.search(pattern):
         kw = list(keyword)
         url = flask.url_for(".doc_for_library", library=kw[0], keyword=kw[1])
+        row_id = "row-%s.%s" % (keyword[0].lower(), keyword[1].lower().replace(" ","-"))
         keywords.append({"collection": keyword[0],
                          "name": keyword[1],
                          "synopsis": keyword[2],
-                         "url": url})
+                         "url": url,
+                         "row_id": row_id
+                     })
 
     keywords.sort(key=lambda kw: kw["name"])
     return flask.render_template("search.html",

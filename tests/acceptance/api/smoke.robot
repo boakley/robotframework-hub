@@ -2,14 +2,14 @@ This is an experiment, to create a data driven test where the test
 name is the test data. Clever, or too clever? It certainly reads nice.
 
 *** Settings ***
-| Library        | RequestsLibrary
-| Library        | Collections
-| Library        | Process
-| Resource       | ${KEYWORD_DIR}/APIKeywords.robot
-| Suite Setup    | Start Test Server
-| Suite Teardown | Stop Test Server
-| Test Template  | Verify URL return codes
-| Force Tags     | smoke | api
+| Library         | RequestsLibrary
+| Library         | Collections
+| Library         | Process
+| Resource        | ${KEYWORD_DIR}/APIKeywords.robot
+| Suite Setup     | Create session | rfhub | url=http://${host}:${port}
+| Suite Teardown  | Delete All Sessions
+| Test Template   | Verify URL return codes
+| Force Tags      | smoke | api
 
 *** Keywords ***
 | Verify URL return codes
