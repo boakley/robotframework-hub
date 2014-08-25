@@ -4,7 +4,6 @@ name is the test data. Clever, or too clever? It certainly reads nice.
 *** Settings ***
 | Library         | RequestsLibrary
 | Library         | Collections
-| Library         | Process
 | Resource        | ${KEYWORD_DIR}/APIKeywords.robot
 | Suite Setup     | Create session | rfhub | url=http://${host}:${port}
 | Suite Teardown  | Delete All Sessions
