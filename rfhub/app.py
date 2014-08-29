@@ -30,6 +30,7 @@ class RobotHub(object):
 
         self.app.add_url_rule("/", "home", self._root)
         self.app.add_url_rule("/ping", "ping", self._ping)
+        self.app.add_url_rule("/favicon.ico", "favicon", self._favicon)
         self.app.register_blueprint(blueprints.api, url_prefix="/api")
         self.app.register_blueprint(blueprints.doc, url_prefix="/doc")
         self.app.register_blueprint(blueprints.dashboard, url_prefix="/dashboard")
@@ -47,6 +48,11 @@ class RobotHub(object):
             http_server = HTTPServer(WSGIContainer(self.app))
             http_server.listen(port=self.args.port, address=self.args.interface)
             IOLoop.instance().start()
+
+    def _favicon(self):
+        static_dir = os.path.join(self.app.root_path, 'static')
+        return flask.send_from_directory(os.path.join(self.app.root_path, 'static'),
+                                         'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
     def _root(self):
         return flask.redirect(flask.url_for('dashboard.home'))
