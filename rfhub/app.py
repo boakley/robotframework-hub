@@ -3,6 +3,7 @@ from argparse import ArgumentParser
 from kwdb import KeywordTable
 from flask import current_app
 import blueprints
+import os
 
 class RobotHub(object):
     """Robot hub - website for REST and HTTP access to robot files"""
@@ -35,7 +36,17 @@ class RobotHub(object):
 
     def start(self):
         """Start the app"""
-        self.app.run(port=self.args.port, debug=self.args.debug, host=self.args.interface)
+        if self.args.debug:
+            self.app.run(port=self.args.port, debug=self.args.debug, host=self.args.interface)
+        else:
+            root = "http://%s:%s" % (self.args.interface, self.args.port)
+            print("tornado web server running on " + root)
+            from tornado.wsgi import WSGIContainer
+            from tornado.httpserver import HTTPServer
+            from tornado.ioloop import IOLoop
+            http_server = HTTPServer(WSGIContainer(self.app))
+            http_server.listen(port=self.args.port, address=self.args.interface)
+            IOLoop.instance().start()
 
     def _root(self):
         return flask.redirect(flask.url_for('dashboard.home'))

@@ -14,7 +14,7 @@ setup(
     long_description = open('README.md').read(),
     zip_safe         = False,
     include_package_data = True,
-    install_requires = ['Flask', 'watchdog', 'robotframework'],
+    install_requires = ['Flask', 'watchdog', 'robotframework', 'tornado'],
     classifiers      = [
         "Development Status :: 2 - Pre-Alpha",
         "License :: OSI Approved :: Apache Software License",
