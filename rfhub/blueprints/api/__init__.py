@@ -54,7 +54,6 @@ def get_library_keywords(library):
             if ("api_library_url" in fields):
                 data["api_library_url"] = flask.url_for(".get_library_keywords",
                                                         library=keyword_library)
-            print "trying to get htmldoc?", ("htmldoc" in fields)
             if ("htmldoc" in fields):
                 try:
                     data["htmldoc"] = DocToHtml("ROBOT")(keyword_doc)
