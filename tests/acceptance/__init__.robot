@@ -18,7 +18,9 @@
 | | ... | As a side effect this creates a suite variable named ${rfhub process},
 | | ... | which is used by the 'Stop rfhub' keyword.
 | | 
-| | ${rfhub process}= | Start process | python | -m | rfhub | --port | ${PORT}
+| | # make sure we use the same python executable used by the test runner
+| | ${python}= | Evaluate | sys.executable | sys
+| | ${rfhub process}= | Start process | ${python} | -m | rfhub | --port | ${PORT}
 | | Set suite variable | ${rfhub process}
 | | Wait until keyword succeeds | 20 seconds | 1 second
 | | ... | Verify URL is reachable | /ping
@@ -28,6 +30,10 @@
 | | ... | Stops the rfhub process created by "Start rfhub"
 | | 
 | | Terminate Process | ${rfhub process}
+| | ${result}= | Get process result
+| | Run keyword if | len('''${result.stderr}''') > 0
+| | ... | log | rfhub stderr: ${result.stderr} | DEBUG
+
 
 | Verify URL is reachable
 | | # This could be useful in more places than just API tests.
