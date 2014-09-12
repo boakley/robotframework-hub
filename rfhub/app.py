@@ -4,6 +4,8 @@ from kwdb import KeywordTable
 from flask import current_app
 import blueprints
 import os
+import sys
+import robot.errors
 
 class RobotHub(object):
     """Robot hub - website for REST and HTTP access to robot files"""
@@ -12,6 +14,8 @@ class RobotHub(object):
         # N.B. this seems to take < 200ms to load up a
         # decent number of files. I can live with that
         parser = ArgumentParser()
+        parser.add_argument("-l", "--library", action="append", default=[],
+                            help="load the given LIBRARY (eg: -l DatabaseLibrary)")
         parser.add_argument("-i", "--interface", default="127.0.0.1")
         parser.add_argument("-p", "--port", default=7070, type=int)
         parser.add_argument("-D", "--debug", action="store_true", default=False)
@@ -25,6 +29,13 @@ class RobotHub(object):
 
         with self.app.app_context():
             current_app.kwdb = self.kwdb
+
+        for lib in self.args.library:
+            try:
+                self.kwdb.add_library(lib)
+            except robot.errors.DataError as e:
+                sys.stderr.write("unable to load library '%s'\n" % lib)
+                sys.exit(1)
 
         self._load_keyword_data(self.args.paths, self.args.no_installed_keywords)
 
