@@ -16,11 +16,16 @@ class RobotHub(object):
         parser = ArgumentParser()
         parser.add_argument("-l", "--library", action="append", default=[],
                             help="load the given LIBRARY (eg: -l DatabaseLibrary)")
-        parser.add_argument("-i", "--interface", default="127.0.0.1")
-        parser.add_argument("-p", "--port", default=7070, type=int)
-        parser.add_argument("-D", "--debug", action="store_true", default=False)
-        parser.add_argument("--no-installed-keywords", action="store_true", default=False)
-        parser.add_argument("paths", nargs="*")
+        parser.add_argument("-i", "--interface", default="127.0.0.1",
+                            help="use the given network interface (default=127.0.0.1)")
+        parser.add_argument("-p", "--port", default=7070, type=int,
+                            help="run on the given PORT (default=7070)")
+        parser.add_argument("-D", "--debug", action="store_true", default=False,
+                            help="turn on debug mode")
+        parser.add_argument("--no-installed-keywords", action="store_true", default=False,
+                            help="do not load some common installed keyword libraries, such as BuiltIn")
+        parser.add_argument("path", nargs="*", 
+                            help="zero or more paths to folders, libraries or resource files")
 
         self.args = parser.parse_args()
 
@@ -37,7 +42,7 @@ class RobotHub(object):
                 sys.stderr.write("unable to load library '%s'\n" % lib)
                 sys.exit(1)
 
-        self._load_keyword_data(self.args.paths, self.args.no_installed_keywords)
+        self._load_keyword_data(self.args.path, self.args.no_installed_keywords)
 
         self.app.add_url_rule("/", "home", self._root)
         self.app.add_url_rule("/ping", "ping", self._ping)
