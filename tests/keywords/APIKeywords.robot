@@ -1,6 +1,7 @@
 *** Settings ***
 | Documentation
 | ... | Keywords related to the hub API
+| Library | RequestsLibrary
 
 *** Keywords ***
 

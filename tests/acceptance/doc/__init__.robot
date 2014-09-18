@@ -3,3 +3,8 @@
 
 | Suite Setup    | Start rfhub | ${PORT}
 | Suite Teardown | Stop rfhub
+
+*** Variables ***
+| ${HOST} | localhost
+| ${PORT} | 7071
+| ${ROOT} | http://${HOST}:${PORT}
