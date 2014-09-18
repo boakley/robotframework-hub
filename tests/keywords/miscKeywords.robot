@@ -1,18 +1,19 @@
 *** Settings ***
+| Documentation
+| ... | Keywords that are of general use to all tests in this suite
+
 | Library | Process
 | Library | RequestsLibrary
-
-
 
 *** Keywords ***
 | Start rfhub
 | | [Arguments] | ${PORT}
 | | [Documentation]
-| | ... | Starts rfhub on the port given in the global variable ${PORT}
-| | ... | As a side effect this creates a suite variable named ${rfhub process},
+| | ... | Starts rfhub on the port given in the variable \${PORT}
+| | ... | As a side effect this creates a suite variable named \${rfhub process},
 | | ... | which is used by the 'Stop rfhub' keyword.
 | | 
-| | # make sure we use the same python executable used by the test runner
+| | # Make sure we use the same python executable used by the test runner
 | | ${python}= | Evaluate | sys.executable | sys
 | | ${rfhub process}= | Start process | ${python} | -m | rfhub | --port | ${PORT}
 | | Set suite variable | ${rfhub process}
