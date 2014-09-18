@@ -159,6 +159,23 @@ class KeywordTable(object):
 
         N.B. folders with names that begin with '." will be skipped
         """
+
+        ignore_file = os.path.join(dirname, ".rfhubignore")
+        exclude_patterns = []
+        try:
+            with open(ignore_file, "r") as f:
+                exclude_patterns = []
+                for line in f.readlines():
+                    line = line.strip()
+                    if (re.match(r'^\s*#', line)): continue
+                    if len(line.strip()) > 0:
+                        exclude_patterns.append(line)
+        except:
+            # should probably warn the user?
+            pass
+
+        print dirname, "exclude_patterns:", exclude_patterns
+
         for filename in os.listdir(dirname):
             path = os.path.join(dirname, filename)
             (basename, ext) = os.path.splitext(filename.lower())
