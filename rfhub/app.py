@@ -11,23 +11,7 @@ class RobotHub(object):
     """Robot hub - website for REST and HTTP access to robot files"""
     def __init__(self):
 
-        # N.B. this seems to take < 200ms to load up a
-        # decent number of files. I can live with that
-        parser = ArgumentParser()
-        parser.add_argument("-l", "--library", action="append", default=[],
-                            help="load the given LIBRARY (eg: -l DatabaseLibrary)")
-        parser.add_argument("-i", "--interface", default="127.0.0.1",
-                            help="use the given network interface (default=127.0.0.1)")
-        parser.add_argument("-p", "--port", default=7070, type=int,
-                            help="run on the given PORT (default=7070)")
-        parser.add_argument("-D", "--debug", action="store_true", default=False,
-                            help="turn on debug mode")
-        parser.add_argument("--no-installed-keywords", action="store_true", default=False,
-                            help="do not load some common installed keyword libraries, such as BuiltIn")
-        parser.add_argument("path", nargs="*", 
-                            help="zero or more paths to folders, libraries or resource files")
-
-        self.args = parser.parse_args()
+        self.args = self._parse_args()
 
         self.kwdb = KeywordTable()
         self.app = flask.Flask(__name__)
@@ -64,6 +48,24 @@ class RobotHub(object):
             http_server = HTTPServer(WSGIContainer(self.app))
             http_server.listen(port=self.args.port, address=self.args.interface)
             IOLoop.instance().start()
+
+    def _parse_args(self):
+        # N.B. this seems to take < 200ms to load up a
+        # decent number of files. I can live with that
+        parser = ArgumentParser()
+        parser.add_argument("-l", "--library", action="append", default=[],
+                            help="load the given LIBRARY (eg: -l DatabaseLibrary)")
+        parser.add_argument("-i", "--interface", default="127.0.0.1",
+                            help="use the given network interface (default=127.0.0.1)")
+        parser.add_argument("-p", "--port", default=7070, type=int,
+                            help="run on the given PORT (default=7070)")
+        parser.add_argument("-D", "--debug", action="store_true", default=False,
+                            help="turn on debug mode")
+        parser.add_argument("--no-installed-keywords", action="store_true", default=False,
+                            help="do not load some common installed keyword libraries, such as BuiltIn")
+        parser.add_argument("path", nargs="*", 
+                            help="zero or more paths to folders, libraries or resource files")
+        return parser.parse_args()
 
     def _favicon(self):
         static_dir = os.path.join(self.app.root_path, 'static')
