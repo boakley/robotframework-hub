@@ -174,8 +174,6 @@ class KeywordTable(object):
             # should probably warn the user?
             pass
 
-        print dirname, "exclude_patterns:", exclude_patterns
-
         for filename in os.listdir(dirname):
             path = os.path.join(dirname, filename)
             (basename, ext) = os.path.splitext(filename.lower())
