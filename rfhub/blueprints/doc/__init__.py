@@ -45,18 +45,32 @@ def search():
     """Show all keywords that match a pattern"""
     pattern = flask.request.args.get('pattern', "*").strip().lower()
 
-    keywords = []
+    # if the pattern contains "in:<collection>" (eg: in:builtin),
+    # filter results to only that (or those) collections
+    # This was kind-of hacked together, but seems to work well enough
+    collections = [c["name"].lower() for c in current_app.kwdb.get_collections()]
+    words = []
+    filters = []
+    for word in pattern.split(" "):
+        if word.lower().startswith("in:"):
+            filters.extend([name for name in collections if name.startswith(word[3:])])
+        else:
+            words.append(word)
+    pattern = " ".join(words)
 
+    keywords = []
     for keyword in current_app.kwdb.search(pattern):
         kw = list(keyword)
-        url = flask.url_for(".doc_for_library", library=kw[0], keyword=kw[1])
-        row_id = "row-%s.%s" % (keyword[0].lower(), keyword[1].lower().replace(" ","-"))
-        keywords.append({"collection": keyword[0],
-                         "name": keyword[1],
-                         "synopsis": keyword[2],
-                         "url": url,
-                         "row_id": row_id
-                     })
+        collection = kw[0].lower()
+        if len(filters) == 0 or collection in filters:
+            url = flask.url_for(".doc_for_library", library=kw[0], keyword=kw[1])
+            row_id = "row-%s.%s" % (keyword[0].lower(), keyword[1].lower().replace(" ","-"))
+            keywords.append({"collection": keyword[0],
+                             "name": keyword[1],
+                             "synopsis": keyword[2],
+                             "url": url,
+                             "row_id": row_id
+                         })
 
     keywords.sort(key=lambda kw: kw["name"])
     return flask.render_template("search.html",
