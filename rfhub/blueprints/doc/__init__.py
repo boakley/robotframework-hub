@@ -3,6 +3,7 @@
 import flask
 from flask import current_app
 import json
+from rfhub.version import __version__
 
 blueprint = flask.Blueprint('doc', __name__,
                             template_folder="templates",
@@ -20,6 +21,7 @@ def doc():
 
     return flask.render_template("home.html",
                                  data={"libraries": libraries,
+                                       "version": __version__,
                                        "libdoc": None,
                                        "hierarchy": hierarchy,
                                        "resource_files": resource_files
@@ -36,6 +38,7 @@ def index():
 
     return flask.render_template("libraryNames.html",
                                  data={"libraries": libraries,
+                                       "version": __version__,
                                        "resource_files": resource_files
                                    })
 
@@ -68,6 +71,7 @@ def search():
             keywords.append({"collection": keyword[0],
                              "name": keyword[1],
                              "synopsis": keyword[2],
+                             "version": __version__,
                              "url": url,
                              "row_id": row_id
                          })
@@ -75,6 +79,7 @@ def search():
     keywords.sort(key=lambda kw: kw["name"])
     return flask.render_template("search.html",
                                  data={"keywords": keywords,
+                                       "version": __version__,
                                        "pattern": pattern
                                    })
 
@@ -107,6 +112,7 @@ def doc_for_library(library, keyword=""):
 
     return flask.render_template("library.html",
                                  data={"keywords": keywords,
+                                       "version": __version__,
                                        "libdoc": libdoc,
                                        "hierarchy": hierarchy})
 
