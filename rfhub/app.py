@@ -6,6 +6,9 @@ import blueprints
 import os
 import sys
 import robot.errors
+import urllib2
+import json
+from version import __version__
 
 class RobotHub(object):
     """Robot hub - website for REST and HTTP access to robot files"""
@@ -42,6 +45,7 @@ class RobotHub(object):
         else:
             root = "http://%s:%s" % (self.args.interface, self.args.port)
             print("tornado web server running on " + root)
+            self._check_version()
             from tornado.wsgi import WSGIContainer
             from tornado.httpserver import HTTPServer
             from tornado.ioloop import IOLoop
@@ -89,3 +93,11 @@ class RobotHub(object):
             except Exception as e:
                 print "Error adding keywords in %s: %s" % (path, str(e))
 
+    @staticmethod
+    def _check_version():
+        r = urllib2.urlopen('https://pypi.python.org/pypi/robotframework-hub/json')
+        latestVersion = json.load(r)['info']['version']
+        if latestVersion != __version__:
+            print 'There is a new version of robotframework-hub available on pypi! Update for the newest features.'
+            print 'Your Version: %s' % __version__
+            print 'Latest Version: %s' % latestVersion
