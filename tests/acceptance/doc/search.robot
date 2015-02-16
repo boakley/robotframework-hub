@@ -18,8 +18,8 @@
 | | [Tags] | smoke
 | | Go to | ${ROOT}/doc
 | | Location should be | ${ROOT}/doc/
-| | Element should contain  | //*[@id="right"]/div[1]/h1 | Libraries
-| | Element should contain  | //*[@id="right"]/h1 | Resource Files
+| | Element should contain  | //*[@id="right"]/div[@id='summary-libraries']/h1 | Libraries
+| | Element should contain  | //*[@id="right"]/div[@id='summary-resources']/h1 | Resource Files
 | | Capture page screenshot
 
 | Search via search box redirects to /doc/keywords
