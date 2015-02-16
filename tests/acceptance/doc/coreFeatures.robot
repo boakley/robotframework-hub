@@ -39,7 +39,7 @@
 | | 
 | | :FOR | ${lib} | IN | @{libraries}
 | | | XPath should match X times
-| | | ... | //*[@id="left"]/ul/li/label[contains(text(), "${lib['name']}")] 
+| | | ... | //*[@id="left"]/ul/li/label[./text()='${lib["name"]}']
 | | | ... | 1
 
 | Main panel shows correct number of libraries
@@ -68,7 +68,7 @@
 | | :FOR | ${lib} | IN | @{libraries}
 | | | ${name} | Get from dictionary | ${lib} | name
 | | | XPath should match X times
-| | | ... | //*[@id="right"]/div[1]/table/tbody/tr/td/a[contains(text(), "${name}")]
+| | | ... | //*[@id="right"]/div[1]/table/tbody/tr/td/a[./text()='${name}']
 | | | ... | 1
 
 | Main panel shows all library descriptions
@@ -79,11 +79,11 @@
 | | ... | Get list of libraries via the API | AND
 | | ... | Go to | ${ROOT}/doc
 | | 
+| | ${section}= | Set variable | 
 | | :FOR | ${lib} | IN | @{libraries}
-| | | ${synopsis} | Get from dictionary | ${lib} | synopsis
-| | | XPath should match X times
-| | | ... | //*[@id="right"]/div[1]/table/tbody/tr/td[contains(text(), "${synopsis}")]
-| | | ... | 1
+| | | ${expected}= | Get from dictionary | ${lib} | synopsis
+| | | ${actual}=   | Get text | //*[@id="right"]/div[@id='summary-libraries']/table/tbody/tr/td/a[text()='${lib["name"]}']/../following-sibling::td
+| | | Should be equal | ${expected} | ${actual}
 
 *** Keywords ***
 | Get list of libraries via the API
