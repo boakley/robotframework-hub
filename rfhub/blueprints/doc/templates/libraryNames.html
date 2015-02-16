@@ -1,4 +1,4 @@
-<div>
+<div id='summary-libraries'>
   <h1>Libraries</h1>
   <table>
     {% for item in data["libraries"] %}
@@ -7,8 +7,8 @@
   </table>
 </div>
 
-<h1>Resource Files</h1>
-<div>
+<div id='summary-resources'>
+  <h1>Resource Files</h1>
   <table>
     {% for item in data["resource_files"] %}
     <tr><td><a href="{{item[1]}}">{{item[0]}}</a></td><td>{{item[2]}}</td></tr>
