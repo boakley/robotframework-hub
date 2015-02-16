@@ -14,7 +14,6 @@
           {% endif %}
           {% for kw in item.keywords %}
             <li class="keyword">
-              <!-- this is wrong: I shouldn't be building URLs like htis... -->
               <a href='{{kw.url}}'>{{kw.name}}</a>
             </li>
           {% endfor %}
