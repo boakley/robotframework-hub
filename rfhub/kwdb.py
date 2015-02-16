@@ -443,6 +443,10 @@ class KeywordTable(object):
         # us from doing a full parse of files that are obviously
         # not robot files
 
+        if (re.search(r'__init__.(txt|robot|html|tsv)$', name)):
+            # These are initialize files, not resource files
+            return False
+
         found_keyword_table = False
         if (name.lower().endswith(".robot") or
             name.lower().endswith(".txt") or
