@@ -2,7 +2,12 @@
 {% block content %}
 <h1>{{data.libdoc.name}}</h1>
 Version: {{data.libdoc.version}}
-&#x2022 Scope: {{data.libdoc.scope}}
+&#x2022 Scope: {{data.libdoc.scope}}<br>
+
+{% if data.libdoc.path != None %}
+path: <span class='file-path'>{{data.libdoc.path}}</span>
+{% endif  %}
+
 <!-- &#x2022 Named Arguments: {{data.libdoc.namesargs}} -->
 <h2>Introduction</h2>
 {% autoescape false %}
