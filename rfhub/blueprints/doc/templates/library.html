@@ -1,11 +1,13 @@
 {% extends "twocolumn.html" %}
 {% block content %}
 <h1>{{data.libdoc.name}}</h1>
-Version: {{data.libdoc.version}}
-&#x2022 Scope: {{data.libdoc.scope}}<br>
-
+{% if data.libdoc.type == "library" %}
+Version: {% if data.libdoc.version %}{{ data.libdoc.version }}{% else %}<i>undefined</i>{% endif %}
+&#x2022
+Scope: {% if data.libdoc.scope %}{{data.libdoc.scope}}{% else %}<i>undefined</i>{% endif %} <br>
+{% endif %}
 {% if data.libdoc.path != None %}
-path: <span class='file-path'>{{data.libdoc.path}}</span>
+<span class='file-path'>{{data.libdoc.path}}</span>
 {% endif  %}
 
 <!-- &#x2022 Named Arguments: {{data.libdoc.namesargs}} -->
