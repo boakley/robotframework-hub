@@ -10,7 +10,8 @@
 *** Variables ***
 | @{all data keys} 
 | ... | api_keyword_url | api_library_url | args | doc
-| ... | doc_keyword_url | library | name | synopsis
+| ... | doc_keyword_url | library | collection_id
+| ... | name | synopsis
 
 *** Test Cases ***
 | Query with no ?fields parameter returns all expected fields

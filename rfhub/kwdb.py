@@ -213,7 +213,7 @@ class KeywordTable(object):
 
         cursor = self.db.cursor()
         cursor.execute("""
-            INSERT OR REPLACE INTO collection_table
+            INSERT INTO collection_table
                 (name, type, version, scope, namedargs, path, doc, doc_format)
             VALUES
                 (?,?,?,?,?,?,?,?)
@@ -259,35 +259,37 @@ class KeywordTable(object):
                     self.log.debug("unable to add external library %s: %s" % \
                                    (library, str(e)))
 
-    def get_collection(self, name):
+    def get_collection(self, collection_id):
         """Get a specific collection"""
-        sql = """SELECT collection.name, collection.path,
+        sql = """SELECT collection.collection_id, 
+                        collection.name, collection.path,
                         collection.doc,
                         collection.version, collection.scope,
                         collection.namedargs,
                         collection.doc_format
                  FROM collection_table as collection
-                 WHERE name like ?
+                 WHERE collection_id == ? OR collection.name like ?
         """
-        cursor = self._execute(sql, (name,))
-        # need to do more than return just the name; should
-        # return version, path (?), list of keywords (?)
+        cursor = self._execute(sql, (collection_id, collection_id))
+        # need to handle the case where we get more than one result...
+        print "FIXME: more than one query results in kwdb.get_collection"
         sql_result = cursor.fetchone()
         return {
-            "name": sql_result[0],
-            "path": sql_result[1],
-            "doc":  sql_result[2],
-            "version": sql_result[3],
-            "scope":   sql_result[4],
-            "namedargs": sql_result[5],
-            "doc_format": sql_result[6]
+            "collection_id": sql_result[0],
+            "name": sql_result[1],
+            "path": sql_result[2],
+            "doc":  sql_result[3],
+            "version": sql_result[4],
+            "scope":   sql_result[5],
+            "namedargs": sql_result[6],
+            "doc_format": sql_result[7]
         }
         return sql_result
 
     def get_collections(self, pattern="*", libtype="*"):
         """Returns a list of collection name/summary tuples"""
 
-        sql = """SELECT collection.name, collection.doc,
+        sql = """SELECT collection.collection_id, collection.name, collection.doc,
                         collection.type, collection.path
                  FROM collection_table as collection
                  WHERE name like ?
@@ -299,33 +301,30 @@ class KeywordTable(object):
                                      self._glob_to_sql(libtype)))
         sql_result = cursor.fetchall()
 
-        return [{"name": result[0],
-                 "synopsis": result[1].split("\n")[0],
-                 "type": result[2],
-                 "path": result[3]
+        return [{"collection_id": result[0],
+                 "name": result[1],
+                 "synopsis": result[2].split("\n")[0],
+                 "type": result[3],
+                 "path": result[4]
              } for result in sql_result]
 
-    def get_keyword_data(self, collection_name):
-        sql = """SELECT keyword.name, keyword.args, keyword.doc
-                 FROM collection_table as collection
-                 JOIN keyword_table as keyword
-                 WHERE collection.collection_id == keyword.collection_id
-                 AND collection.name like ?
+    def get_keyword_data(self, collection_id):
+        sql = """SELECT keyword.keyword_id, keyword.name, keyword.args, keyword.doc
+                 FROM keyword_table as keyword
+                 WHERE keyword.collection_id == ?
                  ORDER BY keyword.name
               """
-        cursor = self._execute(sql, (collection_name,))
+        cursor = self._execute(sql, (collection_id,))
         return cursor.fetchall()
 
-    def get_keyword(self, library, name):
+    def get_keyword(self, collection_id, name):
         """Get a specific keyword from a library"""
-        sql = """SELECT keyword.name, keyword.args, keyword.doc, collection.name
-                 FROM collection_table as collection
-                 JOIN keyword_table as keyword
-                 WHERE collection.collection_id == keyword.collection_id
-                 AND collection.name like ?
+        sql = """SELECT keyword.name, keyword.args, keyword.doc
+                 FROM keyword_table as keyword
+                 WHERE keyword.collection_id == ?
                  AND keyword.name like ?
               """
-        cursor = self._execute(sql, (library,name))
+        cursor = self._execute(sql, (collection_id,name))
         # We're going to assume no library has duplicate keywords
         # While that in theory _could_ happen, it never _should_,
         # and you get what you deserve if it does.
@@ -334,7 +333,7 @@ class KeywordTable(object):
             return {"name": row[0],
                     "args": json.loads(row[1]),
                     "doc": row[2],
-                    "library": row[3] # should this be a URL to the library? Probably
+                    "collection_id": collection_id
             }
         return {}
 
@@ -350,21 +349,22 @@ class KeywordTable(object):
 
         """
 
-        sql = """SELECT collection.name, keyword.name, keyword.doc
+        sql = """SELECT collection.collection_id, collection.name, collection.path,
+                 keyword.name, keyword.doc
                  FROM collection_table as collection
                  JOIN keyword_table as keyword
                  WHERE collection.collection_id == keyword.collection_id
                  AND keyword.name like ?
-                 ORDER by collection.name, keyword.name
+                 ORDER by collection.name, collection.collection_id, keyword.name
              """
         cursor = self._execute(sql, (self._glob_to_sql(pattern),))
         libraries = []
         current_library = None
         for row in cursor.fetchall():
-            (c_name, k_name, k_doc) = row
-            if c_name != current_library:
-                current_library = c_name
-                libraries.append({"name": c_name, "keywords": []})
+            (c_id, c_name, c_path, k_name, k_doc) = row
+            if c_id != current_library:
+                current_library = c_id
+                libraries.append({"name": c_name, "collection_id": c_id, "keywords": [], "path": c_path})
             libraries[-1]["keywords"].append({"name": k_name, "doc": k_doc})
         return libraries
 
@@ -376,16 +376,16 @@ class KeywordTable(object):
         keyword_synopsis tuples) sorted by keyword name
 
         """
-        sql = """SELECT collection.name, keyword.name, keyword.doc
+        sql = """SELECT collection.collection_id, collection.name, keyword.name, keyword.doc
                  FROM collection_table as collection
                  JOIN keyword_table as keyword
                  WHERE collection.collection_id == keyword.collection_id
                  AND (keyword.name like ? OR keyword.doc like ?)
-                 ORDER by collection.name, keyword.name
+                 ORDER by collection.collection_id, collection.name, keyword.name
              """
         pattern = self._glob_to_sql(pattern)
         cursor = self._execute(sql, (pattern,pattern))
-        result = [(row[0], row[1], row[2].strip().split("\n")[0])
+        result = [(row[0], row[1], row[2], row[3].strip().split("\n")[0])
                   for row in cursor.fetchall()]
         return list(set(result))
 
@@ -398,7 +398,7 @@ class KeywordTable(object):
 
         """
 
-        sql = """SELECT collection.name,
+        sql = """SELECT collection.collection_id, collection.name,
                         keyword.name, keyword.doc, keyword.args
                  FROM collection_table as collection
                  JOIN keyword_table as keyword
@@ -408,7 +408,7 @@ class KeywordTable(object):
              """
         pattern = self._glob_to_sql(pattern)
         cursor = self._execute(sql, (pattern,))
-        result = [(row[0], row[1], row[2], row[3])
+        result = [(row[0], row[1], row[2], row[3], row[4])
                   for row in cursor.fetchall()]
         return list(set(result))
 
@@ -497,7 +497,7 @@ class KeywordTable(object):
         """
         argstring = json.dumps(args)
         self.db.execute("""
-            INSERT OR REPLACE INTO keyword_table
+            INSERT INTO keyword_table
                 (collection_id, name, doc, args)
             VALUES
                 (?,?,?,?)
@@ -509,7 +509,7 @@ class KeywordTable(object):
             self.db.execute("""
                 CREATE TABLE collection_table
                 (collection_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                 name          TEXT COLLATE NOCASE UNIQUE,
+                 name          TEXT COLLATE NOCASE,
                  type          COLLATE NOCASE,
                  version       TEXT,
                  scope         TEXT,

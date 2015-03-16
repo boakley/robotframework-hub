@@ -64,13 +64,15 @@ def search():
     keywords = []
     for keyword in current_app.kwdb.search(pattern):
         kw = list(keyword)
-        collection = kw[0].lower()
-        if len(filters) == 0 or collection in filters:
-            url = flask.url_for(".doc_for_library", library=kw[0], keyword=kw[1])
-            row_id = "row-%s.%s" % (keyword[0].lower(), keyword[1].lower().replace(" ","-"))
-            keywords.append({"collection": keyword[0],
-                             "name": keyword[1],
-                             "synopsis": keyword[2],
+        collection_id = kw[0]
+        collection_name = kw[1].lower()
+        if len(filters) == 0 or collection_name in filters:
+            url = flask.url_for(".doc_for_library", collection_id=kw[0], keyword=kw[2])
+            row_id = "row-%s.%s" % (keyword[1].lower(), keyword[2].lower().replace(" ","-"))
+            keywords.append({"collection_id": keyword[0],
+                             "collection_name": keyword[1],
+                             "name": keyword[2],
+                             "synopsis": keyword[3],
                              "version": __version__,
                              "url": url,
                              "row_id": row_id
@@ -89,13 +91,13 @@ def search():
 # /doc/BuiltIn/Evaluate gets redirected to the one with a
 # trailing slash, which then gives a 404 since the slash
 # is invalid. WTF?
-@blueprint.route("/keywords/<library>/<keyword>/")
-@blueprint.route("/keywords/<library>/")
-def doc_for_library(library, keyword=""):
+@blueprint.route("/keywords/<collection_id>/<keyword>/")
+@blueprint.route("/keywords/<collection_id>/")
+def doc_for_library(collection_id, keyword=""):
     kwdb = current_app.kwdb
 
     keywords = []
-    for (name, args, doc) in kwdb.get_keyword_data(library):
+    for (keyword_id, name, args, doc) in kwdb.get_keyword_data(collection_id):
         # args is a json list; convert it to actual list, and
         # then convert that to a string
         args = ", ".join(json.loads(args))
@@ -104,7 +106,7 @@ def doc_for_library(library, keyword=""):
         keywords.append((name, args, doc, target))
 
     # this is the introduction documentation for the library
-    libdoc = kwdb.get_collection(library)
+    libdoc = kwdb.get_collection(collection_id)
     libdoc["doc"] = doc_to_html(libdoc["doc"], libdoc["doc_format"])
 
     # this data is necessary for the nav panel
@@ -120,7 +122,7 @@ def get_collections(kwdb, libtype="*"):
     """Get list of collections from kwdb, then add urls necessary for hyperlinks"""
     collections = []
     for result in kwdb.get_collections(libtype=libtype):
-        url = flask.url_for(".doc_for_library", library=result["name"])
+        url = flask.url_for(".doc_for_library", collection_id=result["collection_id"])
         collections.append((result["name"],url,result["synopsis"]))
 
     return collections
@@ -131,7 +133,7 @@ def get_navpanel_data(kwdb):
     for library in data:
         for keyword in library["keywords"]:
             url = flask.url_for(".doc_for_library",
-                                library=library["name"],
+                                collection_id=library["collection_id"],
                                 keyword=keyword["name"])
             keyword["url"] = url
 
