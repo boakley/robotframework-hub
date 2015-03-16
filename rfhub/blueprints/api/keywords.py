@@ -69,13 +69,11 @@ class ApiEndpoint(object):
         kwdb = current_app.kwdb
 
         # if collection_id is a name, redirect?
-        print "Redirect?"
         collections = kwdb.get_collections(pattern=collection_id.strip().lower())
         if len(collections) == 1:
             collection_id = collections[0]["collection_id"]
         else:
             # need to redirect to a disambiguation page
-            print "FIXME: don't return 404, do a redirection to a disambiguation page!"
             flask.abort(404)
         
         try:
