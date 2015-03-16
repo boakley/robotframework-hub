@@ -114,7 +114,10 @@
 | | Go to | ${ROOT}/doc
 | | Search for | none shall pass
 | | Click link | link=None Shall Pass
-| | Location should be | ${ROOT}/doc/keywords/Easter/None%20Shall%20Pass/
+| | # N.B. "5" is the expected collection_id of the "Easter" library
+| | # Perhaps that's a bad thing to assume, but since this test suite
+| | # controls which libraries are loaded, it's a reasonably safe bet.
+| | Location should be | ${ROOT}/doc/keywords/5/None%20Shall%20Pass/
 
 *** Keywords ***
 | Search for

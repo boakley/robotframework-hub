@@ -8,7 +8,7 @@ from flask import current_app
 class ApiEndpoint(object):
     def __init__(self, blueprint):
         blueprint.add_url_rule("/libraries/", view_func = self.get_libraries)
-        blueprint.add_url_rule("/libraries/<library>", view_func = self.get_library)
+        blueprint.add_url_rule("/libraries/<collection_id>", view_func = self.get_library)
         
     def get_libraries(self):
         kwdb = current_app.kwdb
@@ -18,7 +18,9 @@ class ApiEndpoint(object):
 
         return flask.jsonify(libraries=libraries)
 
-    def get_library(self, library):
+    def get_library(self, collection_id):
+        # if collection_id is a library _name_, redirect
+        print "get_library: collection_id=", collection_id
         kwdb = current_app.kwdb
-        library = kwdb.get_collection(library)
-        return flask.jsonify(library=library)
+        collection = kwdb.get_collection(collection_id)
+        return flask.jsonify(collection=collection)

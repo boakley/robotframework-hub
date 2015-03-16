@@ -18,7 +18,7 @@
 | | ... | \| \| \| Do a get on \| http://www.google.com \| blah blah blah
 | | ... | \| \| \| Do a get on \| blah blah blah blah blah 
 | | 
-| | ${response}= | Get | rfhub | ${url}
+| | ${response}= | GET Request | rfhub | ${url}
 | | ${JSON}= | Run keyword if | "${response.status_code}" == "200"
 | | ... | To JSON | ${response.content} 
 | | Set test variable | ${JSON}
