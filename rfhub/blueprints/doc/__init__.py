@@ -116,7 +116,9 @@ def doc_for_library(collection_id, keyword=""):
                                  data={"keywords": keywords,
                                        "version": __version__,
                                        "libdoc": libdoc,
-                                       "hierarchy": hierarchy})
+                                       "hierarchy": hierarchy,
+                                       "collection_id": collection_id
+                                   })
 
 def get_collections(kwdb, libtype="*"):
     """Get list of collections from kwdb, then add urls necessary for hyperlinks"""
@@ -131,6 +133,7 @@ def get_navpanel_data(kwdb):
     """Get navpanel data from kwdb, and add urls necessary for hyperlinks"""
     data = kwdb.get_keyword_hierarchy()
     for library in data:
+        library["url"] = flask.url_for(".doc_for_library", collection_id=library["collection_id"])
         for keyword in library["keywords"]:
             url = flask.url_for(".doc_for_library",
                                 collection_id=library["collection_id"],

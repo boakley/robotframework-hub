@@ -2,17 +2,20 @@
 {% block body %}
     <div class="well" id="left">
       <ul class="list-group list-unstyled">
-        {% for item in data.hierarchy %}
-          {% if data.libdoc.name == item.name %}
+        {% for collection in data.hierarchy %}
+          {% if collection.collection_id|string == data.collection_id|string %}
             <li>
-              <label class="tree-toggler nav-header">{{item.name}}</label>
+              <label class="tree-toggler nav-header" title="{{collection.path}}">{{collection.name}}</label>
               <ul class="list-group list-unstyled tree">
           {% else %}
             <li>
-              <label class="tree-toggler nav-header">{{item.name}}</label>
+              <label class="tree-toggler nav-header" title="{{collection.path}}">{{collection.name}}</label>
               <ul class="list-group list-unstyled tree collapse" >
           {% endif %}
-          {% for kw in item.keywords %}
+          <li class="keyword">
+            <a href='{{collection.url}}'><i>Overview</i></a>
+          </li>
+          {% for kw in collection.keywords %}
             <li class="keyword">
               <a href='{{kw.url}}'>{{kw.name}}</a>
             </li>
