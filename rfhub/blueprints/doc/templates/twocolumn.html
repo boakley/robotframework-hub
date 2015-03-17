@@ -5,14 +5,16 @@
         {% for collection in data.hierarchy %}
           {% if collection.collection_id|string == data.collection_id|string %}
             <li>
-              <label class="tree-toggler nav-header" title="{{collection.path}}">{{collection.name}}</label>
-              <ul class="list-group list-unstyled tree">
+              <label class="tree-toggler nav-header"
+                     title="file path: {{collection.path}}">{{collection.name}}</label>
+              <ul class="list-group tree">
           {% else %}
             <li>
-              <label class="tree-toggler nav-header" title="{{collection.path}}">{{collection.name}}</label>
-              <ul class="list-group list-unstyled tree collapse" >
+              <label class="tree-toggler nav-header"
+                     title="flie path: {{collection.path}}">{{collection.name}}</label>
+              <ul class="list-group  tree collapse" >
           {% endif %}
-          <li class="keyword">
+          <li class="overview">
             <a href='{{collection.url}}'><i>Overview</i></a>
           </li>
           {% for kw in collection.keywords %}

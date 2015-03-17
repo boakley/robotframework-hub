@@ -26,7 +26,7 @@ body, html {
     position: absolute;
     top: 60px;
     bottom: 0;
-    height: 90%;
+    height: calc(100% - 3em);
     width: 20%;
     overflow-y: scroll;
 }
@@ -62,8 +62,8 @@ table th {
     padding-left: 10px;
 }
 
-.keyword {
-    margin-left: 10px;
+.keyword, .overview {
+    margin-left: 20px;
 }
 
 .search-container {
