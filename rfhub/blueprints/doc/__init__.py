@@ -54,6 +54,12 @@ def search():
     collections = [c["name"].lower() for c in current_app.kwdb.get_collections()]
     words = []
     filters = []
+    if pattern.startswith("name:"):
+        pattern = pattern[5:].strip()
+        mode = "name"
+    else:
+        mode="both"
+
     for word in pattern.split(" "):
         if word.lower().startswith("in:"):
             filters.extend([name for name in collections if name.startswith(word[3:])])
@@ -62,7 +68,7 @@ def search():
     pattern = " ".join(words)
 
     keywords = []
-    for keyword in current_app.kwdb.search(pattern):
+    for keyword in current_app.kwdb.search(pattern, mode):
         kw = list(keyword)
         collection_id = kw[0]
         collection_name = kw[1].lower()

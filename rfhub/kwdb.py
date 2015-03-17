@@ -373,23 +373,41 @@ class KeywordTable(object):
             libraries[-1]["keywords"].append({"name": k_name, "doc": k_doc})
         return libraries
 
-    def search(self, pattern="*"):
+    def search(self, pattern="*", mode="both"):
         """Perform a pattern-based search on keyword names and documentation
 
         The pattern matching is insensitive to case. The function
-        returns a list of (library_name, keyword_name,
-        keyword_synopsis tuples) sorted by keyword name
+        returns a list of tuples of the form library_id, library_name, 
+        keyword_name, keyword_synopsis, sorted by library id,
+        library name, and then keyword name
+
+        If a pattern begins with "name:", only the keyword names will
+        be searched. Otherwise, the pattern is searched for in both
+        the name and keyword documentation.
+
+        You can limit the search to a single library by specifying
+        "in:" followed by the name of the library or resource
+        file. For example, "screenshot in:Selenium2Library" will only
+        search for the word 'screenshot' in the Selenium2Library.
 
         """
+        pattern = self._glob_to_sql(pattern)
+
+        COND = "(keyword.name like ? OR keyword.doc like ?)"
+        args = [pattern, pattern]
+        if mode == "name":
+            COND = "(keyword.name like ?)"
+            args = [pattern,]
+            
         sql = """SELECT collection.collection_id, collection.name, keyword.name, keyword.doc
                  FROM collection_table as collection
                  JOIN keyword_table as keyword
                  WHERE collection.collection_id == keyword.collection_id
-                 AND (keyword.name like ? OR keyword.doc like ?)
+                 AND %s
                  ORDER by collection.collection_id, collection.name, keyword.name
-             """
-        pattern = self._glob_to_sql(pattern)
-        cursor = self._execute(sql, (pattern,pattern))
+             """ % COND
+
+        cursor = self._execute(sql, args)
         result = [(row[0], row[1], row[2], row[3].strip().split("\n")[0])
                   for row in cursor.fetchall()]
         return list(set(result))

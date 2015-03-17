@@ -105,6 +105,21 @@
 | | Page should contain | Searching for 'none shall pass' found 1 keywords
 | | Page Should Contain Link | None Shall Pass
 
+| Using the name: prefix
+| | [Documentation]
+| | ... | Objective: verify the name: prefix works
+| | Go to | ${ROOT}/doc
+| | Search for | name:screenshot
+| | Page should contain | Searching for 'screenshot' found 4 keywords
+
+| Using the in: prefix
+| | [Documentation]
+| | ... | Objective: verify the in: prefix works
+| | Go to | ${ROOT}/doc
+| | Search for | screenshot in:Selenium2Library
+| | Page should contain | Searching for 'screenshot' found 2 keywords
+| | ... | Expected results to include exactly 2 keywords, but it didn't
+
 | Clicking search result link shows keyword
 | | [Documentation]
 | | ... | Objective: make sure that clicking a link causes the 
