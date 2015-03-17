@@ -122,10 +122,10 @@ def doc_for_library(collection_id, keyword=""):
 
 def get_collections(kwdb, libtype="*"):
     """Get list of collections from kwdb, then add urls necessary for hyperlinks"""
-    collections = []
-    for result in kwdb.get_collections(libtype=libtype):
+    collections = kwdb.get_collections(libtype=libtype)
+    for result in collections:
         url = flask.url_for(".doc_for_library", collection_id=result["collection_id"])
-        collections.append((result["name"],url,result["synopsis"]))
+        result["url"] = url
 
     return collections
 

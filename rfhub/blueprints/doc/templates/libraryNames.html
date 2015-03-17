@@ -2,7 +2,7 @@
   <h1>Libraries</h1>
   <table>
     {% for item in data["libraries"] %}
-    <tr><td><a href="{{item[1]}}">{{item[0]}}</a></td><td>{{item[2]}}</td></tr>
+    <tr><td><a href="{{item.url}}">{{item.name}}</a></td><td>{{item.synopsis}}</td></tr>
     {% endfor %}
   </table>
 </div>
@@ -11,7 +11,7 @@
   <h1>Resource Files</h1>
   <table>
     {% for item in data["resource_files"] %}
-    <tr><td><a href="{{item[1]}}">{{item[0]}}</a></td><td>{{item[2]}}</td></tr>
+    <tr><td><a href="{{item.url}}">{{item.name}}</a></td><td>{{item.synopsis}}</td></tr>
     {% endfor %}
   </table>
 </div>
