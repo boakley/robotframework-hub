@@ -11,10 +11,13 @@ Scope: {% if data.libdoc.scope %}{{data.libdoc.scope}}{% else %}<i>undefined</i>
 {% endif  %}
 
 <!-- &#x2022 Named Arguments: {{data.libdoc.namesargs}} -->
+{% if data.libdoc.doc %}
 <h2>Introduction</h2>
 {% autoescape false %}
 {{ data.libdoc.doc }}
 {% endautoescape %}
+{% endif %}
+<h2>Keywords</h2>
 <table class=example border=1>
   <tr><th>Keywords</th><th>Arguments</th><th>Documentation</th></tr>
   {% for item in data.keywords %}
