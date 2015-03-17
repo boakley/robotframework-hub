@@ -6,12 +6,17 @@ import blueprints
 import os
 import sys
 import robot.errors
+from rfhub.version import __version__
 
 class RobotHub(object):
     """Robot hub - website for REST and HTTP access to robot files"""
     def __init__(self):
 
         self.args = self._parse_args()
+
+        if self.args.version:
+            print __version__
+            sys.exit(0)
 
         self.kwdb = KeywordTable()
         self.app = flask.Flask(__name__)
@@ -63,6 +68,8 @@ class RobotHub(object):
                             help="turn on debug mode")
         parser.add_argument("--no-installed-keywords", action="store_true", default=False,
                             help="do not load some common installed keyword libraries, such as BuiltIn")
+        parser.add_argument("--version", action="store_true", default=False,
+                            help="Display version number and exit")
         parser.add_argument("path", nargs="*", 
                             help="zero or more paths to folders, libraries or resource files")
         return parser.parse_args()
