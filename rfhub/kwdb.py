@@ -128,6 +128,11 @@ class KeywordTable(object):
         """Add a resource file or library file to the database"""
         libdoc = LibraryDocumentation(path)
         if len(libdoc.keywords) > 0:
+            if libdoc.doc.startswith("Documentation for resource file"):
+                # bah! The file doesn't have an file-level documentation
+                # and libdoc substitutes some placeholder text. 
+                libdoc.doc = ""
+                
             collection_id = self.add_collection(path, libdoc.name, libdoc.type,
                                                 libdoc.doc, libdoc.version,
                                                 libdoc.scope, libdoc.named_args,
@@ -261,7 +266,7 @@ class KeywordTable(object):
 
     def get_collection(self, collection_id):
         """Get a specific collection"""
-        sql = """SELECT collection.collection_id, 
+        sql = """SELECT collection.collection_id, collection.type,
                         collection.name, collection.path,
                         collection.doc,
                         collection.version, collection.scope,
@@ -272,17 +277,17 @@ class KeywordTable(object):
         """
         cursor = self._execute(sql, (collection_id, collection_id))
         # need to handle the case where we get more than one result...
-        print "FIXME: more than one query results in kwdb.get_collection"
         sql_result = cursor.fetchone()
         return {
             "collection_id": sql_result[0],
-            "name": sql_result[1],
-            "path": sql_result[2],
-            "doc":  sql_result[3],
-            "version": sql_result[4],
-            "scope":   sql_result[5],
-            "namedargs": sql_result[6],
-            "doc_format": sql_result[7]
+            "type": sql_result[1],
+            "name": sql_result[2],
+            "path": sql_result[3],
+            "doc":  sql_result[4],
+            "version": sql_result[5],
+            "scope":   sql_result[6],
+            "namedargs": sql_result[7],
+            "doc_format": sql_result[8]
         }
         return sql_result
 
