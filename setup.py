@@ -1,3 +1,5 @@
+# N.B. to push a new version to PyPi, update the version number
+# in rflint/version.py and then run 'python setup.py sdist upload'
 from setuptools import setup
 
 execfile('rfhub/version.py')
@@ -16,7 +18,7 @@ setup(
     include_package_data = True,
     install_requires = ['Flask', 'watchdog', 'robotframework', 'tornado'],
     classifiers      = [
-        "Development Status :: 2 - Pre-Alpha",
+        "Development Status :: 3 - Alpha",
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
