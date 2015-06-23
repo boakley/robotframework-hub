@@ -9,6 +9,11 @@ import robot.errors
 from rfhub.version import __version__
 import importlib
 import inspect
+from tornado.wsgi import WSGIContainer
+from tornado.httpserver import HTTPServer
+import tornado.ioloop
+import signal
+
 
 class RobotHub(object):
     """Robot hub - website for REST and HTTP access to robot files"""
@@ -49,12 +54,23 @@ class RobotHub(object):
         else:
             root = "http://%s:%s" % (self.args.interface, self.args.port)
             print("tornado web server running on " + root)
-            from tornado.wsgi import WSGIContainer
-            from tornado.httpserver import HTTPServer
-            from tornado.ioloop import IOLoop
+            self.shutdown_requested = False
             http_server = HTTPServer(WSGIContainer(self.app))
             http_server.listen(port=self.args.port, address=self.args.interface)
-            IOLoop.instance().start()
+
+            signal.signal(signal.SIGINT, self.signal_handler)
+            tornado.ioloop.PeriodicCallback(self.check_shutdown_flag, 500).start()
+            tornado.ioloop.IOLoop.instance().start()
+
+    def signal_handler(self, *args):
+        """Handle SIGINT by setting a flag to request shutdown"""
+        self.shutdown_requested = True
+
+    def check_shutdown_flag(self):
+        """Shutdown the server if the flag has been set"""
+        if self.shutdown_requested:
+            tornado.ioloop.IOLoop.instance().stop()
+            print("web server stopped.")
 
     def _parse_args(self):
         parser = argparse.ArgumentParser()
