@@ -1,5 +1,5 @@
 import flask
-from argparse import ArgumentParser
+import argparse
 from kwdb import KeywordTable
 from flask import current_app
 import blueprints
@@ -7,6 +7,8 @@ import os
 import sys
 import robot.errors
 from rfhub.version import __version__
+import importlib
+import inspect
 
 class RobotHub(object):
     """Robot hub - website for REST and HTTP access to robot files"""
@@ -55,15 +57,15 @@ class RobotHub(object):
             IOLoop.instance().start()
 
     def _parse_args(self):
-        # N.B. this seems to take < 200ms to load up a
-        # decent number of files. I can live with that
-        parser = ArgumentParser()
+        parser = argparse.ArgumentParser()
         parser.add_argument("-l", "--library", action="append", default=[],
                             help="load the given LIBRARY (eg: -l DatabaseLibrary)")
         parser.add_argument("-i", "--interface", default="127.0.0.1",
                             help="use the given network interface (default=127.0.0.1)")
         parser.add_argument("-p", "--port", default=7070, type=int,
                             help="run on the given PORT (default=7070)")
+        parser.add_argument("-P", "--pageobjects", action=PageObjectAction,
+                            help="give the name of a module that exports one or more page objects")
         parser.add_argument("-D", "--debug", action="store_true", default=False,
                             help="turn on debug mode")
         parser.add_argument("--no-installed-keywords", action="store_true", default=False,
@@ -96,3 +98,46 @@ class RobotHub(object):
             except Exception as e:
                 print "Error adding keywords in %s: %s" % (path, str(e))
 
+class PageObjectAction(argparse.Action):
+    '''Handle the -P / --pageobject option
+
+    This finds all pages objects in the given module.  Since page
+    objects are libraries, they will be appended to the "library"
+    attribute of the namespace and eventually get processed like other
+    libraries.
+
+    Note: page object classes that set the class attribute
+    '__show_in_rfhub' to False will not be included.
+
+    This works by importing the module given as an argument to the
+    option, and then looking for all members of the module that
+    inherit from robotpageobjects.Page. 
+
+    For example, if you give the option "pages.MyApp", this will
+    attempt to import the module "pages.MyApp", and search for classes
+    that are a subclass of Page. For each class it finds it will
+    append "pages.MyApp.<class name>" (eg: pages.MyApp.ExamplePage) to
+    the list of libraries that will eventually be processed.
+
+    '''
+
+    def __call__(self, parser, namespace, arg, option_string = None):
+        from robotpageobjects import Page
+        try:
+            module = importlib.import_module(name=arg)
+            for name, obj in inspect.getmembers(module):
+                if inspect.isclass(obj) and issubclass(obj, Page):
+                    # Pay Attention! The attribute we're looking for
+                    # takes advantage of name mangling, meaning that
+                    # the attribute is unique to the class and won't
+                    # be inherited (which is important!). See
+                    # https://docs.python.org/2/tutorial/classes.html#private-variables-and-class-local-references
+
+                    attr = "_%s__show_in_rfhub" % obj.__name__
+                    if getattr(obj, attr, True):
+                        libname = "%s.%s" % (module.__name__, name)
+                        namespace.library.append(libname)
+
+        except ImportError:
+            print "unable to import '%s'" % module_name
+            sys.exit(1)
