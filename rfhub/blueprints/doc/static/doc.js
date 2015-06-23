@@ -16,7 +16,7 @@ $(document).ready(function () {
 
   function renderKeywords(pattern) {
     if (! _.isEmpty(pattern)) {
-      $.get('/doc/search', { pattern: pattern })
+        $.get('/doc/search', { pattern: pattern })
         .done(function (responseData) {
           $('#right').html(responseData);
         });
@@ -30,7 +30,7 @@ $(document).ready(function () {
 
   function refreshKeywords(e) {
     var pattern = $(e.target).val();
-    var url = '/doc/keywords/'
+    var url = '/doc/keywords/';
     if (!_.isEmpty(pattern)) {
       url = url + '?pattern=' + pattern;
     }
