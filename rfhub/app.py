@@ -155,5 +155,5 @@ class PageObjectAction(argparse.Action):
                         namespace.library.append(libname)
 
         except ImportError:
-            print "unable to import '%s'" % module_name
+            print "unable to import '%s'" % arg
             sys.exit(1)
