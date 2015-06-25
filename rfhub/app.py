@@ -1,19 +1,19 @@
-import flask
-import argparse
-from kwdb import KeywordTable
 from flask import current_app
-import blueprints
-import os
-import sys
-from robot.utils.argumentparser import ArgFileParser
-import robot.errors
+from kwdb import KeywordTable
 from rfhub.version import __version__
+from robot.utils.argumentparser import ArgFileParser
+from tornado.httpserver import HTTPServer
+from tornado.wsgi import WSGIContainer
+import tornado.ioloop
+import argparse
+import blueprints
+import flask
 import importlib
 import inspect
-from tornado.wsgi import WSGIContainer
-from tornado.httpserver import HTTPServer
-import tornado.ioloop
+import os
+import robot.errors
 import signal
+import sys
 
 
 class RobotHub(object):
