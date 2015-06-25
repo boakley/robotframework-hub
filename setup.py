@@ -18,7 +18,7 @@ setup(
     include_package_data = True,
     install_requires = ['Flask', 'watchdog', 'robotframework', 'tornado'],
     classifiers      = [
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
