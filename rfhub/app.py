@@ -37,7 +37,6 @@ class RobotHub(object):
                 self.kwdb.add_library(lib)
             except robot.errors.DataError as e:
                 sys.stderr.write("unable to load library '%s'\n" % lib)
-                sys.exit(1)
 
         self._load_keyword_data(self.args.path, self.args.no_installed_keywords)
 
@@ -178,4 +177,3 @@ class PageObjectAction(argparse.Action):
         except ImportError as e:
             print "unable to import '%s'" % arg
             print e
-            sys.exit(1)
