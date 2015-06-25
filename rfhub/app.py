@@ -80,7 +80,9 @@ class RobotHub(object):
                             help="use the given network interface (default=127.0.0.1)")
         parser.add_argument("-p", "--port", default=7070, type=int,
                             help="run on the given PORT (default=7070)")
-        parser.add_argument("-P", "--pageobjects", action=PageObjectAction,
+        parser.add_argument("-P", "--pythonpath", action=PythonPathAction,
+                            help="additional locations to search for libraries.")
+        parser.add_argument("--pageobjects", action=PageObjectAction,
                             help="give the name of a module that exports one or more page objects")
         parser.add_argument("-D", "--debug", action="store_true", default=False,
                             help="turn on debug mode")
@@ -113,6 +115,11 @@ class RobotHub(object):
                 self.kwdb.add(path)
             except Exception as e:
                 print "Error adding keywords in %s: %s" % (path, str(e))
+
+class PythonPathAction(argparse.Action):
+    """Add a path to PYTHONPATH"""
+    def __call__(self, parser, namespace, arg, option_string = None):
+        sys.path.insert(0, arg)
 
 class PageObjectAction(argparse.Action):
     '''Handle the -P / --pageobject option
