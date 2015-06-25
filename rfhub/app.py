@@ -5,6 +5,7 @@ from flask import current_app
 import blueprints
 import os
 import sys
+from robot.utils.argumentparser import ArgFileParser
 import robot.errors
 from rfhub.version import __version__
 import importlib
@@ -80,9 +81,11 @@ class RobotHub(object):
                             help="use the given network interface (default=127.0.0.1)")
         parser.add_argument("-p", "--port", default=7070, type=int,
                             help="run on the given PORT (default=7070)")
+        parser.add_argument("-A", "--argumentfile", action=ArgfileAction,
+                            help="read arguments from the given file")
         parser.add_argument("-P", "--pythonpath", action=PythonPathAction,
                             help="additional locations to search for libraries.")
-        parser.add_argument("--pageobjects", action=PageObjectAction,
+        parser.add_argument("-O", "--pageobjects", action=PageObjectAction,
                             help="give the name of a module that exports one or more page objects")
         parser.add_argument("-D", "--debug", action="store_true", default=False,
                             help="turn on debug mode")
@@ -115,6 +118,17 @@ class RobotHub(object):
                 self.kwdb.add(path)
             except Exception as e:
                 print "Error adding keywords in %s: %s" % (path, str(e))
+
+class ArgfileAction(argparse.Action):
+    '''Called when the argument parser encounters --argumentfile'''
+    def __call__ (self, parser, namespace, values, option_string = None):
+        path = os.path.abspath(os.path.expanduser(values))
+        if not os.path.exists(path):
+            raise Exception("Argument file doesn't exist: %s" % values)
+
+        ap = ArgFileParser(["--argumentfile","-A"])
+        args = ap.process(["-A", values])
+        parser.parse_args(args, namespace)
 
 class PythonPathAction(argparse.Action):
     """Add a path to PYTHONPATH"""
@@ -161,6 +175,7 @@ class PageObjectAction(argparse.Action):
                         libname = "%s.%s" % (module.__name__, name)
                         namespace.library.append(libname)
 
-        except ImportError:
+        except ImportError as e:
             print "unable to import '%s'" % arg
+            print e
             sys.exit(1)
