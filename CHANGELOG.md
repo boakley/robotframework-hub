@@ -1,5 +1,15 @@
 # Change Log
 
+## 0.8.3 - 2015-06-26
+
+### Issues closed
+- Issue #44 - Ctrl-c won't stop the hub on windows
+- Issue #45 - add -P/--pythonpath option
+- Issue #46 - add -A/--argumentfile option
+
+### Other changes
+- status of this package has been upgraded to "Beta"
+
 ## 0.7 - 2015-03-18
 
 The big change is support for multiple resource or library files
