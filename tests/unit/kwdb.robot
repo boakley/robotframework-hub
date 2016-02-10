@@ -1,6 +1,7 @@
 *** Settings ***
 | Documentation | Unit tests for the keyword database library 
 | Library       | Collections
+| Library | OperatingSystem
 | Resource      | ${KEYWORD_DIR}/KWDBKeywords.robot
 | Force tags    | kwdb
 | Suite Setup   | Initialize suite variables
@@ -124,7 +125,7 @@
 
 | Initialize suite variables
 | | [Documentation]    | Define some global variables used by the tests in this suite
-| | ${test dir}=       | Evaluate | os.path.dirname("${SUITE SOURCE}") | os
+| | ${test dir}=       | Evaluate | os.path.dirname(r"${SUITE SOURCE}") | os
 | | set suite variable | ${KEYWORD DIR} | ${test dir}/keywords
 | | set suite variable | ${DATA_DIR}    | ${test dir}/data
 

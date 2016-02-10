@@ -40,6 +40,15 @@
 | | ... | --no-installed-keywords
 | | ... | do not load some common installed keyword libraries
 
+| Help for option -M/--module
+| | [Documentation]
+| | ... | Verify that the help message includes help for -M/--module
+| | 
+| | Start the hub with options | --help
+| | Output should contain 
+| | ... | -M MODULE, --module MODULE
+| | ... | give the name of a module that exports one or more
+
 
 *** Keywords ***
 | Start the hub with options
