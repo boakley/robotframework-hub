@@ -47,7 +47,8 @@
       <!-- from http://stackoverflow.com/questions/18619740 -->
         <div class="col-sm-4 col-md-4 pull-right">
             <div class="input-group search-container">
-              <input type="text" class="form-control"
+              <input type="text" class="form-control" data-url_keywords="{{ url_for('doc.doc') }}"
+                     data-url_search="{{ url_for('doc.search') }}" data-url_index="{{ url_for('doc.index') }}"
                      placeholder="Search all keywords" id="search-pattern">
               <div class="input-group-btn">
                   <button class="btn btn-default">
