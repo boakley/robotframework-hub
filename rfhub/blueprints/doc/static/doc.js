@@ -14,14 +14,14 @@ $(document).ready(function () {
     return str.indexOf(suffix, str.length - suffix.length) !== -1;
   }
 
-  function renderKeywords(pattern) {
+  function renderKeywords(pattern, element) {
     if (! _.isEmpty(pattern)) {
-        $.get('/doc/search', { pattern: pattern })
+        $.get(element.data('url_search'), { pattern: pattern })
         .done(function (responseData) {
           $('#right').html(responseData);
         });
     } else {
-      $.get('/doc/index')
+      $.get(element.data('url_index'))
         .done(function (responseData) {
           $('#right').html(responseData);
         });
@@ -29,13 +29,14 @@ $(document).ready(function () {
   }
 
   function refreshKeywords(e) {
-    var pattern = $(e.target).val();
-    var url = '/doc/keywords/';
+    var element = $(e.target);
+    var pattern = element.val();
+    var url = element.data('url_keywords');
     if (!_.isEmpty(pattern)) {
       url = url + '?pattern=' + pattern;
     }
     history.pushState({ pattern: pattern }, '', url);
-    renderKeywords(pattern);
+    renderKeywords(pattern, element);
   }
 
   function setSearchFieldValue(newValue) {
