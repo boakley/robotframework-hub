@@ -16,6 +16,7 @@ import re
 import sys
 
 from watchdog.observers import Observer
+from watchdog.observers.polling import PollingObserver
 from watchdog.events import PatternMatchingEventHandler
 
 """
@@ -53,7 +54,7 @@ class WatchdogHandler(PatternMatchingEventHandler):
 class KeywordTable(object):
     """A SQLite database of keywords"""
 
-    def __init__(self, dbfile=":memory:"):
+    def __init__(self, dbfile=":memory:", poll=False):
         self.db = sqlite3.connect(dbfile, check_same_thread=False)
         self.log = logging.getLogger(__name__)
         self._create_db()
@@ -62,7 +63,7 @@ class KeywordTable(object):
         # set up watchdog observer to monitor changes to
         # keyword files (or more correctly, to directories
         # of keyword files)
-        self.observer = Observer()
+        self.observer =  PollingObserver() if poll else Observer()
         self.observer.start()
 
     def add(self, name, monitor=True):
