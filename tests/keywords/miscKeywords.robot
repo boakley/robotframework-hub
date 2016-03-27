@@ -4,10 +4,11 @@
 
 | Library | Process
 | Library | RequestsLibrary
+| Library | Dialogs
 
 *** Keywords ***
 | Start rfhub
-| | [Arguments] | ${PORT}
+| | [Arguments] | @{options}
 | | [Documentation]
 | | ... | Starts rfhub on the port given in the variable \${PORT}
 | | ... | As a side effect this creates a suite variable named \${rfhub process},
@@ -15,7 +16,8 @@
 | | 
 | | # Make sure we use the same python executable used by the test runner
 | | ${python}= | Evaluate | sys.executable | sys
-| | ${rfhub process}= | Start process | ${python} | -m | rfhub | --port | ${PORT}
+| | ${rfhub process}= | Start process | ${python} | -m | rfhub | @{options}
+| | sleep | 2 seconds | # give the server a chance to start
 | | Set suite variable | ${rfhub process}
 | | Wait until keyword succeeds | 20 seconds | 1 second
 | | ... | Verify URL is reachable | /ping
@@ -37,5 +39,5 @@
 | | [Documentation]
 | | ... | Fail if the given URL doesn't return a status code of 200.
 | | Create Session | tmp | http://localhost:${PORT}
-| | ${response}= | Get | tmp | ${url}
+| | ${response}= | Get Request | tmp | ${url}
 | | Should be equal as integers | ${response.status_code} | 200

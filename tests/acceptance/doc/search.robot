@@ -1,6 +1,5 @@
 *** Settings ***
 | Library | Selenium2Library
-| Library | Dialogs 
 
 | Suite Setup    | Open Browser | ${ROOT} | ${BROWSER}
 | Suite Teardown | Close all browsers
@@ -52,7 +51,7 @@
 | | Search for | none shall pass
 | | Page should contain | Searching for 'none shall pass' found 1 keywords
 
-| Search summary, multiple results (searching for X found 7 keywords)
+| Search summary, multiple results (searching for X found 6 keywords)
 | | [Documentation]
 | | ... | Objective: visit a bookmarked search page and verify that
 | | ... | the right number of search terms was found
@@ -60,7 +59,7 @@
 | |
 | | Go to | ${ROOT}/doc
 | | Search for | Fatal
-| | Page should contain | Searching for 'fatal' found 7 keywords
+| | Page should contain | Searching for 'fatal' found 6 keywords
 
 | Correct number of search results - zero results
 | | [Documentation]
@@ -92,7 +91,7 @@
 | | Go to | ${ROOT}/doc
 | | Search for | fatal
 | | ${count}= | Get matching xpath count | xpath=//table[@id='keyword-table']/tbody/tr
-| | Should be equal as integers | ${count} | 7
+| | Should be equal as integers | ${count} | 6
 | | ... | Expected six rows in the table body, got ${count} instead
 
 | Keyword search URL goes to search page

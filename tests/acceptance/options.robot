@@ -2,6 +2,14 @@
 | Library | OperatingSystem
 
 *** Test Cases ***
+| Help for option --root
+| | [Documentation]
+| | ... | Verify that the help message includes help for --root
+| | Start the hub with options | --help
+| | Output should contain
+| | ... | --root ROOT
+| | ... | Redirect root url (http://localhost:port/) to this url (eg: /dashboard, /doc)
+
 | Help for option -l/--library
 | | [Documentation]
 | | ... | Verify that the help message includes help for -i/--interface
