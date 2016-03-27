@@ -49,6 +49,15 @@
 | | ... | -M MODULE, --module MODULE
 | | ... | give the name of a module that exports one or more
 
+| Help for option --poll
+| | [Documentation]
+| | ... | Verify that the help message includes help for --poll
+| |
+| | Start the hub with options | --help
+| | Output should contain
+| | ... | --poll
+| | ... | use polling behavior instead of events to reload
+| | ... | keywords on changes (useful in VMs)
 
 *** Keywords ***
 | Start the hub with options

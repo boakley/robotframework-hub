@@ -26,7 +26,7 @@ class RobotHub(object):
             print __version__
             sys.exit(0)
 
-        self.kwdb = KeywordTable()
+        self.kwdb = KeywordTable(poll=self.args.poll)
         self.app = flask.Flask(__name__)
 
         with self.app.app_context():
@@ -90,6 +90,8 @@ class RobotHub(object):
                             help="turn on debug mode")
         parser.add_argument("--no-installed-keywords", action="store_true", default=False,
                             help="do not load some common installed keyword libraries, such as BuiltIn")
+        parser.add_argument("--poll", action="store_true", default=False,
+                            help="use polling behavior instead of events to reload keywords on changes (useful in VMs)")
         parser.add_argument("--version", action="store_true", default=False,
                             help="Display version number and exit")
         parser.add_argument("path", nargs="*", 
