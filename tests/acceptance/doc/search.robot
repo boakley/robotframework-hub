@@ -52,7 +52,7 @@
 | | Search for | none shall pass
 | | Page should contain | Searching for 'none shall pass' found 1 keywords
 
-| Search summary, multiple results (searching for X found 6 keywords)
+| Search summary, multiple results (searching for X found 7 keywords)
 | | [Documentation]
 | | ... | Objective: visit a bookmarked search page and verify that
 | | ... | the right number of search terms was found
@@ -60,7 +60,7 @@
 | |
 | | Go to | ${ROOT}/doc
 | | Search for | Fatal
-| | Page should contain | Searching for 'fatal' found 6 keywords
+| | Page should contain | Searching for 'fatal' found 7 keywords
 
 | Correct number of search results - zero results
 | | [Documentation]
@@ -92,7 +92,7 @@
 | | Go to | ${ROOT}/doc
 | | Search for | fatal
 | | ${count}= | Get matching xpath count | xpath=//table[@id='keyword-table']/tbody/tr
-| | Should be equal as integers | ${count} | 6
+| | Should be equal as integers | ${count} | 7
 | | ... | Expected six rows in the table body, got ${count} instead
 
 | Keyword search URL goes to search page
@@ -110,15 +110,15 @@
 | | ... | Objective: verify the name: prefix works
 | | Go to | ${ROOT}/doc
 | | Search for | name:screenshot
-| | Page should contain | Searching for 'screenshot' found 4 keywords
+| | Page should contain | Searching for 'screenshot' found 5 keywords
 
 | Using the in: prefix
 | | [Documentation]
 | | ... | Objective: verify the in: prefix works
 | | Go to | ${ROOT}/doc
 | | Search for | screenshot in:Selenium2Library
-| | Page should contain | Searching for 'screenshot' found 2 keywords
-| | ... | Expected results to include exactly 2 keywords, but it didn't
+| | Page should contain | Searching for 'screenshot' found 3 keywords
+| | ... | Expected results to include exactly 3 keywords, but it didn't
 
 | Clicking search result link shows keyword
 | | [Documentation]
@@ -132,6 +132,7 @@
 | | # N.B. "5" is the expected collection_id of the "Easter" library
 | | # Perhaps that's a bad thing to assume, but since this test suite
 | | # controls which libraries are loaded, it's a reasonably safe bet.
+| | Wait Until Element Is Visible | id=kw-none-shall-pass
 | | Location should be | ${ROOT}/doc/keywords/5/None%20Shall%20Pass/
 
 *** Keywords ***

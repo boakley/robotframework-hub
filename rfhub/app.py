@@ -36,7 +36,7 @@ class RobotHub(object):
             try:
                 self.kwdb.add_library(lib)
             except robot.errors.DataError as e:
-                sys.stderr.write("unable to load library '%s'\n" % lib)
+                sys.stderr.write("unable to load library '%s': %s\n" %(lib,e))
 
         self._load_keyword_data(self.args.path, self.args.no_installed_keywords)
 
@@ -84,8 +84,8 @@ class RobotHub(object):
                             help="read arguments from the given file")
         parser.add_argument("-P", "--pythonpath", action=PythonPathAction,
                             help="additional locations to search for libraries.")
-        parser.add_argument("-O", "--pageobjects", action=PageObjectAction,
-                            help="give the name of a module that exports one or more page objects")
+        parser.add_argument("-M", "--module", action=ModuleAction,
+                            help="give the name of a module that exports one or more classes")
         parser.add_argument("-D", "--debug", action="store_true", default=False,
                             help="turn on debug mode")
         parser.add_argument("--no-installed-keywords", action="store_true", default=False,
@@ -134,35 +134,33 @@ class PythonPathAction(argparse.Action):
     def __call__(self, parser, namespace, arg, option_string = None):
         sys.path.insert(0, arg)
 
-class PageObjectAction(argparse.Action):
-    '''Handle the -P / --pageobject option
+class ModuleAction(argparse.Action):
+    '''Handle the -M / --module option
 
-    This finds all pages objects in the given module.  Since page
-    objects are libraries, they will be appended to the "library"
+    This finds all class objects in the given module.  Since page
+    objects are modules of , they will be appended to the "library"
     attribute of the namespace and eventually get processed like other
     libraries.
 
-    Note: page object classes that set the class attribute
+    Note: classes that set the class attribute
     '__show_in_rfhub' to False will not be included.
 
     This works by importing the module given as an argument to the
     option, and then looking for all members of the module that
-    inherit from robotpageobjects.Page. 
+    are classes 
 
     For example, if you give the option "pages.MyApp", this will
-    attempt to import the module "pages.MyApp", and search for classes
-    that are a subclass of Page. For each class it finds it will
+    attempt to import the module "pages.MyApp", and search for the classes
+    that are exported from that module. For each class it finds it will
     append "pages.MyApp.<class name>" (eg: pages.MyApp.ExamplePage) to
     the list of libraries that will eventually be processed.
-
     '''
 
     def __call__(self, parser, namespace, arg, option_string = None):
-        from robotpageobjects import Page
         try:
             module = importlib.import_module(name=arg)
             for name, obj in inspect.getmembers(module):
-                if inspect.isclass(obj) and issubclass(obj, Page):
+                if inspect.isclass(obj):
                     # Pay Attention! The attribute we're looking for
                     # takes advantage of name mangling, meaning that
                     # the attribute is unique to the class and won't
@@ -175,5 +173,4 @@ class PageObjectAction(argparse.Action):
                         namespace.library.append(libname)
 
         except ImportError as e:
-            print "unable to import '%s'" % arg
-            print e
+            print "unable to import '%s' : %s" % (arg,e)
