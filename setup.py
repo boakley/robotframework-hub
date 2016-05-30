@@ -2,7 +2,8 @@
 # in rfhub/version.py and then run 'python setup.py sdist upload'
 from setuptools import setup
 
-execfile('rfhub/version.py')
+filename = 'rfhub/version.py'
+exec(open(filename).read())
 
 setup(
     name             = 'robotframework-hub',

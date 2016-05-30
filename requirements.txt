@@ -6,6 +6,6 @@ Werkzeug==0.9.6
 argh==0.25.0
 itsdangerous==0.24
 pathtools==0.1.2
-robotframework==2.8.5
+robotframework==3.0
 watchdog==0.8.0
-wsgiref==0.1.2
+# wsgiref==0.1.2
