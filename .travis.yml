@@ -13,6 +13,7 @@ install:
   - pip install -r requirements.txt
   - python setup.py develop
 before_script:
+ - "wget http://chromedriver.googlecode.com/files/chromedriver_linux32_23.0.1240.0.zip && unzip chromedriver_linux32_23.0.1240.0.zip && sudo mv chromedriver /usr/bin"
  - "export CHROME_BIN=chromium-browser"
  - "export DISPLAY=:99.0"
  - "sh -e /etc/init.d/xvfb start"
