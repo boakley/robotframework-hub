@@ -14,7 +14,7 @@ setup(
     license          = 'Apache License 2.0',
     description      = 'Webserver for robot framework assets',
     long_description = open('README.md').read(),
-    zip_safe         = False,
+    zip_safe         = True,
     include_package_data = True,
     install_requires = ['Flask', 'watchdog', 'robotframework', 'tornado'],
     classifiers      = [
