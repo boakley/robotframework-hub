@@ -1,5 +1,5 @@
 # default arguments; any other argument files should include
-# this file. 
+# this file.
 --variable BROWSER:chrome
 --variable KEYWORD_DIR:tests/keywords
 --variable HOST:localhost
