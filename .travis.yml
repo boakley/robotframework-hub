@@ -14,8 +14,8 @@ install:
   - pip install -r requirements.txt
   - python setup.py develop
 before_script:
-  - sudo ln -s /usr/lib/chromium-browser/chromedriver /usr/bin
-  - ls -al /usr/bin | grep chromedriver
+#  - sudo ln -s /usr/lib/chromium-browser/chromedriver /usr/bin
+#  - ls -al /usr/bin | grep chromedriver
 #  - "export CHROME_BIN=chromium-browser"
   - "export PATH=$PATH:/usr/lib/chromium-browser"
   - "export DISPLAY=:99.0"
