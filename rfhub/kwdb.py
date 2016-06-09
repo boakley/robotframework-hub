@@ -131,9 +131,9 @@ class KeywordTable(object):
         if len(libdoc.keywords) > 0:
             if libdoc.doc.startswith("Documentation for resource file"):
                 # bah! The file doesn't have an file-level documentation
-                # and libdoc substitutes some placeholder text. 
+                # and libdoc substitutes some placeholder text.
                 libdoc.doc = ""
-                
+
             collection_id = self.add_collection(path, libdoc.name, libdoc.type,
                                                 libdoc.doc, libdoc.version,
                                                 libdoc.scope, libdoc.named_args,
@@ -193,9 +193,9 @@ class KeywordTable(object):
                     if (ext in (".xml", ".robot", ".txt", ".py", ".tsv")):
                         if os.access(path, os.R_OK):
                             self.add(path)
-            except Exception, e:
+            except Exception as e:
                 # I really need to get the logging situation figured out.
-                print "bummer:", str(e)
+                print("bummer:", str(e))
 
         # FIXME:
         # instead of passing a flag around, I should just keep track
@@ -248,7 +248,7 @@ class KeywordTable(object):
                     try:
                         self.add(libname)
                         loaded.append(libname.lower())
-                    except Exception, e:
+                    except Exception as e:
                         # need a better way to log this...
                         self.log.debug("unable to add library: " + str(e))
 
@@ -261,7 +261,7 @@ class KeywordTable(object):
                 try:
                     self.add(library)
                     loaded.append(library.lower())
-                except Exception, e:
+                except Exception as e:
                     self.log.debug("unable to add external library %s: %s" % \
                                    (library, str(e)))
 
@@ -378,7 +378,7 @@ class KeywordTable(object):
         """Perform a pattern-based search on keyword names and documentation
 
         The pattern matching is insensitive to case. The function
-        returns a list of tuples of the form library_id, library_name, 
+        returns a list of tuples of the form library_id, library_name,
         keyword_name, keyword_synopsis, sorted by library id,
         library name, and then keyword name
 
@@ -399,7 +399,7 @@ class KeywordTable(object):
         if mode == "name":
             COND = "(keyword.name like ?)"
             args = [pattern,]
-            
+
         sql = """SELECT collection.collection_id, collection.name, keyword.name, keyword.doc
                  FROM collection_table as collection
                  JOIN keyword_table as keyword

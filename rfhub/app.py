@@ -23,7 +23,7 @@ class RobotHub(object):
         self.args = self._parse_args()
 
         if self.args.version:
-            print __version__
+            print(__version__)
             sys.exit(0)
 
         self.kwdb = KeywordTable(poll=self.args.poll)
@@ -96,7 +96,7 @@ class RobotHub(object):
                             help="Redirect root url (http://localhost:port/) to this url (eg: /dashboard, /doc)")
         parser.add_argument("--version", action="store_true", default=False,
                             help="Display version number and exit")
-        parser.add_argument("path", nargs="*", 
+        parser.add_argument("path", nargs="*",
                             help="zero or more paths to folders, libraries or resource files")
         return parser.parse_args()
 
@@ -120,7 +120,7 @@ class RobotHub(object):
             try:
                 self.kwdb.add(path)
             except Exception as e:
-                print "Error adding keywords in %s: %s" % (path, str(e))
+                print("Error adding keywords in %s: %s" % (path, str(e)))
 
 class ArgfileAction(argparse.Action):
     '''Called when the argument parser encounters --argumentfile'''
@@ -151,7 +151,7 @@ class ModuleAction(argparse.Action):
 
     This works by importing the module given as an argument to the
     option, and then looking for all members of the module that
-    are classes 
+    are classes
 
     For example, if you give the option "pages.MyApp", this will
     attempt to import the module "pages.MyApp", and search for the classes
@@ -177,4 +177,4 @@ class ModuleAction(argparse.Action):
                         namespace.library.append(libname)
 
         except ImportError as e:
-            print "unable to import '%s' : %s" % (arg,e)
+            print("unable to import '%s' : %s" % (arg,e))
