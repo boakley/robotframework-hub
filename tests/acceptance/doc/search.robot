@@ -51,15 +51,15 @@
 | | Search for | none shall pass
 | | Page should contain | Searching for 'none shall pass' found 1 keywords
 
-| Search summary, multiple results (searching for X found 6 keywords)
+| Search summary, multiple results (searching for X found Y keywords)
 | | [Documentation]
 | | ... | Objective: visit a bookmarked search page and verify that
 | | ... | the right number of search terms was found
 | | [Tags] | smoke
 | |
 | | Go to | ${ROOT}/doc
-| | Search for | Fatal
-| | Page should contain | Searching for 'fatal' found 6 keywords
+| | Search for | rfhub
+| | Page should contain | Searching for 'rfhub' found 2 keywords
 
 | Correct number of search results - zero results
 | | [Documentation]
@@ -89,10 +89,11 @@
 | | ... | the table of keywords
 | | 
 | | Go to | ${ROOT}/doc
-| | Search for | fatal
+| | # this should find two results, from our own miscKeywords file
+| | Search for | rfhub
 | | ${count}= | Get matching xpath count | xpath=//table[@id='keyword-table']/tbody/tr
-| | Should be equal as integers | ${count} | 6
-| | ... | Expected six rows in the table body, got ${count} instead
+| | Should be equal as integers | ${count} | 2
+| | ... | Expected two rows in the table body, got ${count} instead
 
 | Keyword search URL goes to search page
 | | [Documentation]
@@ -128,11 +129,11 @@
 | | Go to | ${ROOT}/doc
 | | Search for | none shall pass
 | | Click link | link=None Shall Pass
-| | # N.B. "5" is the expected collection_id of the "Easter" library
+| | # N.B. "6" is the expected collection_id of the "Easter" library
 | | # Perhaps that's a bad thing to assume, but since this test suite
 | | # controls which libraries are loaded, it's a reasonably safe bet.
 | | Wait Until Element Is Visible | id=kw-none-shall-pass
-| | Location should be | ${ROOT}/doc/keywords/5/None%20Shall%20Pass/
+| | Location should be | ${ROOT}/doc/keywords/6/None%20Shall%20Pass/
 
 *** Keywords ***
 | Search for
