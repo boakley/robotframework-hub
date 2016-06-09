@@ -8,4 +8,3 @@ install:
   - python setup.py develop
 script:
   - pybot -A tests/conf/default.args tests
-
