@@ -11,7 +11,7 @@ class ApiEndpoint(object):
         blueprint.add_url_rule("/keywords/", view_func = self.get_keywords)
         blueprint.add_url_rule("/keywords/<collection_id>", view_func = self.get_library_keywords)
         blueprint.add_url_rule("/keywords/<collection_id>/<keyword>", view_func = self.get_library_keyword)
-        
+
     def get_library_keywords(self,collection_id):
 
         query_pattern = flask.request.args.get('pattern', "*").strip().lower()
@@ -36,12 +36,12 @@ class ApiEndpoint(object):
                 if ("doc" in fields): data["doc"] = keyword_doc
                 if ("args" in fields): data["args"] = keyword_args
 
-                if ("doc_keyword_url" in fields): 
+                if ("doc_keyword_url" in fields):
                     data["doc_keyword_url"] = flask.url_for("doc.doc_for_library",
                                                             collection_id=keyword_collection_id,
                                                             keyword=keyword_name)
                 if ("api_keyword_url" in fields):
-                    data["api_keyword_url"] = flask.url_for(".get_library_keyword", 
+                    data["api_keyword_url"] = flask.url_for(".get_library_keyword",
                                                             collection_id=keyword_collection_id,
                                                             keyword=keyword_name)
 
@@ -51,7 +51,7 @@ class ApiEndpoint(object):
                 if ("htmldoc" in fields):
                     try:
                         data["htmldoc"] = DocToHtml("ROBOT")(keyword_doc)
-                    except Exception, e:
+                    except Exception as e:
                         data["htmldoc"] = "";
                         htmldoc = "bummer", e
 
@@ -75,11 +75,11 @@ class ApiEndpoint(object):
         else:
             # need to redirect to a disambiguation page
             flask.abort(404)
-        
+
         try:
             keyword = kwdb.get_keyword(collection_id, keyword)
 
-        except Exception, e:
+        except Exception as e:
             current_app.logger.warning(e)
             flask.abort(404)
 

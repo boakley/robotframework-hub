@@ -11,4 +11,4 @@ robotframework==3.0
 robotframework-requests==0.4.5
 robotframework-selenium2library==1.7.4
 watchdog==0.8.0
-wsgiref==0.1.2
+# wsgiref==0.1.2

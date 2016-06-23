@@ -2,7 +2,8 @@
 # in rfhub/version.py and then run 'python setup.py sdist upload'
 from setuptools import setup
 
-execfile('rfhub/version.py')
+filename = 'rfhub/version.py'
+exec(open(filename).read())
 
 setup(
     name             = 'robotframework-hub',
@@ -14,7 +15,7 @@ setup(
     license          = 'Apache License 2.0',
     description      = 'Webserver for robot framework assets',
     long_description = open('README.md').read(),
-    zip_safe         = False,
+    zip_safe         = True,
     include_package_data = True,
     install_requires = ['Flask', 'watchdog', 'robotframework', 'tornado'],
     classifiers      = [

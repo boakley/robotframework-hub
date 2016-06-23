@@ -14,7 +14,7 @@
 | ${ROOT} | http://${HOST}:${PORT}
 
 *** Test Cases ***
-| Nav panel shows correct number of libraries
+| Nav panel shows correct number of collections
 | | [Documentation]
 | | ... | Verify that the nav panel has the correct number of items
 | | 
@@ -24,9 +24,10 @@
 | | ... | Go to | ${ROOT}/doc/
 | | 
 | | ${actual} | Get matching xpath count | //*[@id="left"]/ul/li/label
-| | ${expected} | Get length | ${libraries} 
-| | Should Be Equal As Integers | ${expected} | ${actual} 
-| | ... | Expected ${expected} items in navlist, found ${actual}
+| | # why 8? Because we explicitly load 5 libraries 
+| | # and three resource files in the setup
+| | Should Be Equal As Integers | ${actual} | 8
+| | ... | Expected 8 items in navlist, found ${actual}
 
 | Nav panel shows all libraries
 | | [Documentation]
@@ -52,9 +53,9 @@
 | | ... | Go to | ${ROOT}/doc/
 | | 
 | | ${actual} | Get matching xpath count | //*[@id="right"]/div[1]/table/tbody/tr/td/a
-| | ${expected} | Get length | ${libraries} 
-| | Should Be Equal As Integers | ${expected} | ${actual} 
-| | ... | Expected ${expected} items in navlist, found ${actual}
+| | # why 5? Because we explicitly load 5 libraries in the suite setup
+| | Should Be Equal As Integers | ${actual} | 5
+| | ... | Expected 5 items in navlist, found ${actual}
 
 
 | Main panel shows all libraries
@@ -68,7 +69,7 @@
 | | :FOR | ${lib} | IN | @{libraries}
 | | | ${name} | Get from dictionary | ${lib} | name
 | | | XPath should match X times
-| | | ... | //*[@id="right"]/div[1]/table/tbody/tr/td/a[./text()='${name}']
+| | | ... | //*[@id="right"]//a[./text()='${name}']
 | | | ... | 1
 
 | Main panel shows all library descriptions
@@ -82,7 +83,7 @@
 | | ${section}= | Set variable | 
 | | :FOR | ${lib} | IN | @{libraries}
 | | | ${expected}= | Get from dictionary | ${lib} | synopsis
-| | | ${actual}=   | Get text | //*[@id="right"]/div[@id='summary-libraries']/table/tbody/tr/td/a[text()='${lib["name"]}']/../following-sibling::td
+| | | ${actual}=   | Get text | //*[@id="right"]//a[text()='${lib["name"]}']/../following-sibling::td
 | | | Should be equal | ${expected} | ${actual}
 
 *** Keywords ***
