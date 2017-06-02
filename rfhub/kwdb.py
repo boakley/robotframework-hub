@@ -6,18 +6,20 @@ are referred to as "collections".
 
 """
 
-import sqlite3
-import os
-from robot.libdocpkg import LibraryDocumentation
-import robot.libraries
-import logging
+import ast
 import json
+import logging
+import os
 import re
+import sqlite3
 import sys
 
+import robot.libraries
+from robot.libdocpkg import LibraryDocumentation
+from robot.errors import DataError
+from watchdog.events import PatternMatchingEventHandler
 from watchdog.observers import Observer
 from watchdog.observers.polling import PollingObserver
-from watchdog.events import PatternMatchingEventHandler
 
 """
 Note: It seems to be possible for watchdog to fire an event
@@ -32,8 +34,10 @@ elapsed? I haven't yet experienced this problem, but
 I haven't done extensive testing.
 """
 
+
 class WatchdogHandler(PatternMatchingEventHandler):
     patterns = ["*.robot", "*.txt", "*.py", "*.tsv"]
+
     def __init__(self, kwdb, path):
         PatternMatchingEventHandler.__init__(self)
         self.kwdb = kwdb
@@ -51,6 +55,7 @@ class WatchdogHandler(PatternMatchingEventHandler):
     def on_modified(self, event):
         self.kwdb.on_change(event.src_path, event.event_type)
 
+
 class KeywordTable(object):
     """A SQLite database of keywords"""
 
@@ -58,12 +63,12 @@ class KeywordTable(object):
         self.db = sqlite3.connect(dbfile, check_same_thread=False)
         self.log = logging.getLogger(__name__)
         self._create_db()
-#        self.log.warning("I'm warnin' ya!")
+        #        self.log.warning("I'm warnin' ya!")
 
         # set up watchdog observer to monitor changes to
         # keyword files (or more correctly, to directories
         # of keyword files)
-        self.observer =  PollingObserver() if poll else Observer()
+        self.observer = PollingObserver() if poll else Observer()
         self.observer.start()
 
     def add(self, name, monitor=True):
@@ -76,12 +81,34 @@ class KeywordTable(object):
 
         elif os.path.isfile(name):
             if ((self._looks_like_resource_file(name)) or
-                (self._looks_like_libdoc_file(name)) or
-                (self._looks_like_library_file(name))):
+                    (self._looks_like_libdoc_file(name)) or
+                    (self._looks_like_library_file(name))):
                 self.add_file(name)
+                if self._looks_like_library_file(name):
+                    class_names = self._get_classnames_from_file(name)
+                    if class_names:
+                        self.add_keywords_from_classes(name, class_names)
         else:
             # let's hope it's a library name!
             self.add_library(name)
+
+    def add_keywords_from_classes(self, path, class_names):
+        sys.path.append(os.path.dirname(path))
+        file_name = os.path.splitext(os.path.basename(path))[0]
+        for class_name in class_names:
+            try:
+                lib_mane = '{}.{}'.format(file_name, class_name)
+                self.add_library(lib_mane)
+            except (KeyError, AttributeError, DataError):
+                pass
+
+    def _get_classnames_from_file(self, path):
+        with open(path) as file_to_read:
+            source = file_to_read.read()
+
+        p = ast.parse(source)
+        class_names = [node.name for node in ast.walk(p) if isinstance(node, ast.ClassDef)]
+        return class_names
 
     def on_change(self, path, event_type):
         """Respond to changes in the file system
@@ -116,7 +143,7 @@ class KeywordTable(object):
            One of path or libdoc needs to be passed in...
         """
         if libdoc is None and path is None:
-            raise(Exception("You must provide either a path or libdoc argument"))
+            raise (Exception("You must provide either a path or libdoc argument"))
 
         if libdoc is None:
             libdoc = LibraryDocumentation(path)
@@ -227,9 +254,9 @@ class KeywordTable(object):
         collection_id = cursor.lastrowid
         return collection_id
 
-    def add_installed_libraries(self, extra_libs = ["Selenium2Library",
-                                                    "SudsLibrary",
-                                                    "RequestsLibrary"]):
+    def add_installed_libraries(self, extra_libs=["Selenium2Library",
+                                                  "SudsLibrary",
+                                                  "RequestsLibrary"]):
         """Add any installed libraries that we can find
 
         We do this by looking in the `libraries` folder where
@@ -243,7 +270,7 @@ class KeywordTable(object):
             if filename.endswith(".py") or filename.endswith(".pyc"):
                 libname, ext = os.path.splitext(filename)
                 if (libname.lower() not in loaded and
-                    not self._should_ignore(libname)):
+                        not self._should_ignore(libname)):
 
                     try:
                         self.add(libname)
@@ -257,7 +284,7 @@ class KeywordTable(object):
         # robot libraries.
         for library in extra_libs:
             if (library.lower() not in loaded and
-                not self._should_ignore(library)):
+                    not self._should_ignore(library)):
                 try:
                     self.add(library)
                     loaded.append(library.lower())
@@ -284,9 +311,9 @@ class KeywordTable(object):
             "type": sql_result[1],
             "name": sql_result[2],
             "path": sql_result[3],
-            "doc":  sql_result[4],
+            "doc": sql_result[4],
             "version": sql_result[5],
-            "scope":   sql_result[6],
+            "scope": sql_result[6],
             "namedargs": sql_result[7],
             "doc_format": sql_result[8]
         }
@@ -312,7 +339,7 @@ class KeywordTable(object):
                  "synopsis": result[2].split("\n")[0],
                  "type": result[3],
                  "path": result[4]
-             } for result in sql_result]
+                 } for result in sql_result]
 
     def get_keyword_data(self, collection_id):
         sql = """SELECT keyword.keyword_id, keyword.name, keyword.args, keyword.doc
@@ -330,7 +357,7 @@ class KeywordTable(object):
                  WHERE keyword.collection_id == ?
                  AND keyword.name like ?
               """
-        cursor = self._execute(sql, (collection_id,name))
+        cursor = self._execute(sql, (collection_id, name))
         # We're going to assume no library has duplicate keywords
         # While that in theory _could_ happen, it never _should_,
         # and you get what you deserve if it does.
@@ -340,7 +367,7 @@ class KeywordTable(object):
                     "args": json.loads(row[1]),
                     "doc": row[2],
                     "collection_id": collection_id
-            }
+                    }
         return {}
 
     def get_keyword_hierarchy(self, pattern="*"):
@@ -398,7 +425,7 @@ class KeywordTable(object):
         args = [pattern, pattern]
         if mode == "name":
             COND = "(keyword.name like ?)"
-            args = [pattern,]
+            args = [pattern, ]
 
         sql = """SELECT collection.collection_id, collection.name, keyword.name, keyword.doc
                  FROM collection_table as collection
@@ -473,19 +500,19 @@ class KeywordTable(object):
 
         found_keyword_table = False
         if (name.lower().endswith(".robot") or
-            name.lower().endswith(".txt") or
-            name.lower().endswith(".tsv")):
+                name.lower().endswith(".txt") or
+                name.lower().endswith(".tsv")):
 
             with open(name, "r") as f:
                 data = f.read()
                 for match in re.finditer(r'^\*+\s*(Test Cases?|(?:User )?Keywords?)',
-                                         data, re.MULTILINE|re.IGNORECASE):
+                                         data, re.MULTILINE | re.IGNORECASE):
                     if (re.match(r'Test Cases?', match.group(1), re.IGNORECASE)):
                         # if there's a test case table, it's not a keyword file
                         return False
 
                     if (not found_keyword_table and
-                        re.match(r'(User )?Keywords?', match.group(1), re.IGNORECASE)):
+                            re.match(r'(User )?Keywords?', match.group(1), re.IGNORECASE)):
                         found_keyword_table = True
         return found_keyword_table
 
@@ -561,7 +588,6 @@ class KeywordTable(object):
                 ON keyword_table (name)
             """)
 
-
     def _glob_to_sql(self, string):
         """Convert glob-like wildcards to SQL wildcards
 
@@ -582,11 +608,11 @@ class KeywordTable(object):
         # and chr(2) were picked because I know those characters
         # almost certainly won't be in the input string
         table = ((r'\\', chr(1)), (r'\*', chr(2)), (r'\?', chr(3)),
-                 (r'%', r'\%'),   (r'?', '_'),     (r'*', '%'),
+                 (r'%', r'\%'), (r'?', '_'), (r'*', '%'),
                  (chr(1), r'\\'), (chr(2), r'\*'), (chr(3), r'\?'))
 
         for (a, b) in table:
-            string = string.replace(a,b)
+            string = string.replace(a, b)
 
         string = string[1:] if string.startswith("^") else "%" + string
         string = string[:-1] if string.endswith("$") else string + "%"
