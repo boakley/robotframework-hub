@@ -1,23 +1,26 @@
+import argparse
+import importlib
+import inspect
+import os
+import signal
+import sys
+
+import flask
+import robot.errors
+import tornado.ioloop
 from flask import current_app
-from .kwdb import KeywordTable
 from rfhub.version import __version__
 from robot.utils.argumentparser import ArgFileParser
 from tornado.httpserver import HTTPServer
 from tornado.wsgi import WSGIContainer
-import tornado.ioloop
-import argparse
+
 from . import blueprints
-import flask
-import importlib
-import inspect
-import os
-import robot.errors
-import signal
-import sys
+from .kwdb import KeywordTable
 
 
 class RobotHub(object):
     """Robot hub - website for REST and HTTP access to robot files"""
+
     def __init__(self):
 
         self.args = self._parse_args()
@@ -36,8 +39,7 @@ class RobotHub(object):
             try:
                 self.kwdb.add_library(lib)
             except robot.errors.DataError as e:
-                sys.stderr.write("unable to load library '%s': %s\n" %(lib,e))
-
+                sys.stderr.write("unable to load library '%s': %s\n" % (lib, e))
         self._load_keyword_data(self.args.path, self.args.no_installed_keywords)
 
         self.app.add_url_rule("/", "home", self._root)
@@ -122,21 +124,26 @@ class RobotHub(object):
             except Exception as e:
                 print("Error adding keywords in %s: %s" % (path, str(e)))
 
+
 class ArgfileAction(argparse.Action):
     '''Called when the argument parser encounters --argumentfile'''
-    def __call__ (self, parser, namespace, values, option_string = None):
+
+    def __call__(self, parser, namespace, values, option_string=None):
         path = os.path.abspath(os.path.expanduser(values))
         if not os.path.exists(path):
             raise Exception("Argument file doesn't exist: %s" % values)
 
-        ap = ArgFileParser(["--argumentfile","-A"])
+        ap = ArgFileParser(["--argumentfile", "-A"])
         args = ap.process(["-A", values])
         parser.parse_args(args, namespace)
 
+
 class PythonPathAction(argparse.Action):
     """Add a path to PYTHONPATH"""
-    def __call__(self, parser, namespace, arg, option_string = None):
+
+    def __call__(self, parser, namespace, arg, option_string=None):
         sys.path.insert(0, arg)
+
 
 class ModuleAction(argparse.Action):
     '''Handle the -M / --module option
@@ -160,7 +167,7 @@ class ModuleAction(argparse.Action):
     the list of libraries that will eventually be processed.
     '''
 
-    def __call__(self, parser, namespace, arg, option_string = None):
+    def __call__(self, parser, namespace, arg, option_string=None):
         try:
             module = importlib.import_module(name=arg)
             for name, obj in inspect.getmembers(module):
@@ -177,4 +184,4 @@ class ModuleAction(argparse.Action):
                         namespace.library.append(libname)
 
         except ImportError as e:
-            print("unable to import '%s' : %s" % (arg,e))
+            print("unable to import '%s' : %s" % (arg, e))
