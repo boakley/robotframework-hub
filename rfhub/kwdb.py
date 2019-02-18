@@ -67,7 +67,7 @@ class KeywordTable(object):
         self.observer.start()
 
     def add(self, name, monitor=True):
-        """Add a folder, library (.py) or resource file (.robot, .tsv, .txt) to the database
+        """Add a folder, library (.py) or resource file (.robot, .tsv, .txt, .resource) to the database
         """
 
         if os.path.isdir(name):
@@ -474,7 +474,8 @@ class KeywordTable(object):
         found_keyword_table = False
         if (name.lower().endswith(".robot") or
             name.lower().endswith(".txt") or
-            name.lower().endswith(".tsv")):
+            name.lower().endswith(".tsv") or
+            name.lower().endswith(".resource")):
 
             with open(name, "r") as f:
                 data = f.read()

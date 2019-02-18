@@ -31,6 +31,18 @@
 | | Should be equal as integers | ${num keywords} | 1
 | | ... | Expected 1 keyword but found ${num keywords} | values=False
 
+| Verify we can add a resource file with .resource extension
+| | [Documentation]
+| | ... | Verify that we can load a single resource file with .resource extension.
+| | ... | This also verifies we can retrieve the expected number of keywords.
+| | [Tags] | smoke
+| | Create new KWDB instance
+| | Load a resource file into KWDB | ${DATA_DIR}/threekeywords.resource
+| | ${keywords}= | Get keywords from KWDB
+| | ${num keywords}= | Get length | ${keywords}
+| | Should be equal as integers | ${num keywords} | 3
+| | ... | Expected 3 keyword but found ${num keywords} | values=False
+
 | Verify we can add more than once resource file
 | | [Documentation]
 | | ... | Verify that we can load more than one resource file at a time.
