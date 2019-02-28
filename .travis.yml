@@ -21,4 +21,4 @@ before_script:
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3
 script:
-  - pybot -A tests/conf/default.args tests
+  - robot -A tests/conf/default.args tests
