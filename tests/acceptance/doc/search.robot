@@ -110,15 +110,15 @@
 | | ... | Objective: verify the name: prefix works
 | | Go to | ${ROOT}/doc
 | | Search for | name:screenshot
-| | Page should contain | Searching for 'screenshot' found 5 keywords
+| | Page should contain | Searching for 'screenshot' found 6 keywords
 
 | Using the in: prefix
 | | [Documentation]
 | | ... | Objective: verify the in: prefix works
 | | Go to | ${ROOT}/doc
 | | Search for | screenshot in:Selenium2Library
-| | Page should contain | Searching for 'screenshot' found 3 keywords
-| | ... | Expected results to include exactly 3 keywords, but it didn't
+| | Page should contain | Searching for 'screenshot' found 4 keywords
+| | ... | Expected results to include exactly 4 keywords, but it didn't
 
 | Clicking search result link shows keyword
 | | [Documentation]
