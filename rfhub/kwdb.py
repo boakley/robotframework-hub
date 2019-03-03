@@ -33,7 +33,7 @@ I haven't done extensive testing.
 """
 
 class WatchdogHandler(PatternMatchingEventHandler):
-    patterns = ["*.robot", "*.txt", "*.py", "*.tsv"]
+    patterns = ["*.robot", "*.txt", "*.py", "*.tsv", "*.resource"]
     def __init__(self, kwdb, path):
         PatternMatchingEventHandler.__init__(self)
         self.kwdb = kwdb
@@ -190,7 +190,7 @@ class KeywordTable(object):
                         if os.access(path, os.R_OK):
                             self.add_folder(path, watch=False)
                 else:
-                    if (ext in (".xml", ".robot", ".txt", ".py", ".tsv")):
+                    if (ext in (".xml", ".robot", ".txt", ".py", ".tsv", ".resource")):
                         if os.access(path, os.R_OK):
                             self.add(path)
             except Exception as e:
