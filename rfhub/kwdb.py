@@ -14,6 +14,7 @@ import logging
 import json
 import re
 import sys
+from operator import itemgetter
 
 from watchdog.observers import Observer
 from watchdog.observers.polling import PollingObserver
@@ -434,7 +435,7 @@ class KeywordTable(object):
         cursor = self._execute(sql, (pattern,))
         result = [(row[0], row[1], row[2], row[3], row[4])
                   for row in cursor.fetchall()]
-        return list(set(result))
+        return list(sorted(result, key=itemgetter(2)))
 
     def reset(self):
         """Remove all data from the database, but leave the tables intact"""
