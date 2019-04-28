@@ -58,3 +58,6 @@ selenium-screenshot-*.png
 
 # mac crud
 .DS_Store
+
+# PyCharm IDE
+.idea/

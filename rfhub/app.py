@@ -1,12 +1,12 @@
 from flask import current_app
-from kwdb import KeywordTable
+from rfhub.kwdb import KeywordTable
 from rfhub.version import __version__
 from robot.utils.argumentparser import ArgFileParser
 from tornado.httpserver import HTTPServer
 from tornado.wsgi import WSGIContainer
 import tornado.ioloop
 import argparse
-import blueprints
+import rfhub.blueprints
 import flask
 import importlib
 import inspect
@@ -43,9 +43,9 @@ class RobotHub(object):
         self.app.add_url_rule("/", "home", self._root)
         self.app.add_url_rule("/ping", "ping", self._ping)
         self.app.add_url_rule("/favicon.ico", "favicon", self._favicon)
-        self.app.register_blueprint(blueprints.api, url_prefix="/api")
-        self.app.register_blueprint(blueprints.doc, url_prefix="/doc")
-        self.app.register_blueprint(blueprints.dashboard, url_prefix="/dashboard")
+        self.app.register_blueprint( rfhub.blueprints.api, url_prefix="/api")
+        self.app.register_blueprint( rfhub.blueprints.doc, url_prefix="/doc")
+        self.app.register_blueprint( rfhub.blueprints.dashboard, url_prefix="/dashboard")
 
     def start(self):
         """Start the app"""
@@ -122,6 +122,7 @@ class RobotHub(object):
             except Exception as e:
                 print("Error adding keywords in %s: %s" % (path, str(e)))
 
+
 class ArgfileAction(argparse.Action):
     '''Called when the argument parser encounters --argumentfile'''
     def __call__ (self, parser, namespace, values, option_string = None):
@@ -133,10 +134,12 @@ class ArgfileAction(argparse.Action):
         args = ap.process(["-A", values])
         parser.parse_args(args, namespace)
 
+
 class PythonPathAction(argparse.Action):
     """Add a path to PYTHONPATH"""
     def __call__(self, parser, namespace, arg, option_string = None):
         sys.path.insert(0, arg)
+
 
 class ModuleAction(argparse.Action):
     '''Handle the -M / --module option

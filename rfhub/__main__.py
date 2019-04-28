@@ -1,5 +1,5 @@
-import app
+import rfhub.app
 
-app.hub = app.RobotHub()
-app.hub.start()
+rfhub.app.hub = rfhub.app.RobotHub()
+rfhub.app.hub.start()
 

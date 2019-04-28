@@ -1,0 +1,4 @@
+-r ./prod.txt
+Werkzeug>=0.9.6
+robotframework-requests>=0.4.5
+robotframework-selenium2library>=1.7.4
