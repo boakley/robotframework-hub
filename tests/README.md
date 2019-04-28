@@ -3,5 +3,8 @@ the following command:
 
 pybot -A tests/conf/default.args tests
 
+Robot Framework version >3 
+robot -A tests/conf/default.args tests
+
 The report and log files will be placed in tests/results
 

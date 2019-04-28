@@ -8,7 +8,8 @@
 | | Start the hub with options | --help
 | | Output should contain
 | | ... | --root ROOT
-| | ... | Redirect root url (http://localhost:port/) to this url (eg: /dashboard, /doc)
+| | ... | Redirect root url (http://localhost:port/) to this url
+| | ... | (eg: /dashboard, /doc)
 
 | Help for option -l/--library
 | | [Documentation]
@@ -76,7 +77,7 @@
 | | ... | The stdout of the process will be in a test suite
 | | ... | variable named \${output}
 | | 
-| | ${output} | Run | python -m rfhub ${options}
+| | ${output} | Run | ${PYTHON_BIN} -m rfhub ${options}
 | | Set test variable | ${output}
 
 | Output should contain

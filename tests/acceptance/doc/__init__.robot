@@ -1,5 +1,5 @@
 *** Settings ***
-| Resource | tests/keywords/miscKeywords.robot
+| Resource | ${KEYWORD_DIR}/miscKeywords.robot
 
 | Suite Setup    | Start rfhub | --port | ${PORT}
 | # we want to control pricisely which libraries are loaded,

@@ -4,7 +4,7 @@
 | | ... | Creates and returns a new instance of the kwdb object.
 | | ... | This object will have no libraries added by default. The
 | | ... | object is available in the suite variable ${KWDB}
-| | ${KWDB}= | evaluate | rfhub.kwdb.KeywordTable() | rfhub
+| | ${KWDB}= | evaluate | rfhub.kwdb.KeywordTable() | modules=rfhub
 | | Set test variable | ${KWDB}
 
 | Load installed keywords into KWDB

@@ -1,6 +1,6 @@
 *** Settings ***
 | Library | Selenium2Library
-| Resource | tests/keywords/miscKeywords.robot
+| Resource | ${KEYWORD_DIR}/miscKeywords.robot
 
 *** Variables ***
 | ${ROOT} | http://${HOST}:${PORT}

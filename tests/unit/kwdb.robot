@@ -1,7 +1,7 @@
 *** Settings ***
 | Documentation | Unit tests for the keyword database library 
 | Library       | Collections
-| Library | OperatingSystem
+| Library       | OperatingSystem
 | Resource      | ${KEYWORD_DIR}/KWDBKeywords.robot
 | Force tags    | kwdb
 | Suite Setup   | Initialize suite variables
@@ -92,7 +92,8 @@
 | | Create new KWDB instance
 | | Load a resource file into KWDB | ${DATA_DIR}/twokeywords.robot
 | | ${keywords}= | Get keywords from KWDB
-| | # Assume these are in sorted order....
+| | # Never assume the list is sorted !, do it yourself :-)
+| | Sort List | ${keywords}
 | | Should be equal | ${keywords[0][3]} | Documentation for Keyword #1
 | | Should be equal | ${keywords[1][3]} | Documentation for Keyword #2
 

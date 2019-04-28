@@ -68,7 +68,7 @@
 | | 
 | | Go to | ${ROOT}/doc
 | | Search for | -xyzzy-
-| | ${count}= | Get matching xpath count | xpath=//table[@id='keyword-table']/tbody/tr
+| | ${count}= | Get Element Count | xpath=//table[@id='keyword-table']/tbody/tr
 | | Should be equal as integers | ${count} | 0
 | | ... | Expected zero rows in the table body, got ${count} instead
 
@@ -79,7 +79,7 @@
 | | 
 | | Go to | ${ROOT}/doc
 | | Search for | none shall pass
-| | ${count}= | Get matching xpath count | xpath=//table[@id='keyword-table']/tbody/tr
+| | ${count}= | Get Element Count | xpath=//table[@id='keyword-table']/tbody/tr
 | | Should be equal as integers | ${count} | 1 
 | | ... | Expected one row in the table body, got ${count} instead
 
@@ -91,7 +91,7 @@
 | | Go to | ${ROOT}/doc
 | | # this should find two results, from our own miscKeywords file
 | | Search for | rfhub
-| | ${count}= | Get matching xpath count | xpath=//table[@id='keyword-table']/tbody/tr
+| | ${count}= | Get Element Count | xpath=//table[@id='keyword-table']/tbody/tr
 | | Should be equal as integers | ${count} | 2
 | | ... | Expected two rows in the table body, got ${count} instead
 
@@ -110,14 +110,14 @@
 | | ... | Objective: verify the name: prefix works
 | | Go to | ${ROOT}/doc
 | | Search for | name:screenshot
-| | Page should contain | Searching for 'screenshot' found 5 keywords
+| | Page should contain | Searching for 'screenshot' found
 
 | Using the in: prefix
 | | [Documentation]
 | | ... | Objective: verify the in: prefix works
 | | Go to | ${ROOT}/doc
 | | Search for | screenshot in:Selenium2Library
-| | Page should contain | Searching for 'screenshot' found 3 keywords
+| | Page should contain | Searching for 'screenshot' found
 | | ... | Expected results to include exactly 3 keywords, but it didn't
 
 | Clicking search result link shows keyword

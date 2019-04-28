@@ -23,7 +23,7 @@
 | | ... | Get list of libraries via the API | AND
 | | ... | Go to | ${ROOT}/doc/
 | | 
-| | ${actual} | Get matching xpath count | //*[@id="left"]/ul/li/label
+| | ${actual} | Get Element Count | //*[@id="left"]/ul/li/label
 | | # why 8? Because we explicitly load 5 libraries 
 | | # and three resource files in the setup
 | | Should Be Equal As Integers | ${actual} | 8
@@ -39,9 +39,9 @@
 | | ... | Go to | ${ROOT}/doc/
 | | 
 | | :FOR | ${lib} | IN | @{libraries}
-| | | XPath should match X times
+| | | Page Should Contain Element
 | | | ... | //*[@id="left"]/ul/li/label[./text()='${lib["name"]}']
-| | | ... | 1
+| | | ... | limit=1
 
 | Main panel shows correct number of libraries
 | | [Documentation]
@@ -52,7 +52,7 @@
 | | ... | Get list of libraries via the API | AND
 | | ... | Go to | ${ROOT}/doc/
 | | 
-| | ${actual} | Get matching xpath count | //*[@id="right"]/div[1]/table/tbody/tr/td/a
+| | ${actual} | Get Element Count | //*[@id="right"]/div[1]/table/tbody/tr/td/a
 | | # why 5? Because we explicitly load 5 libraries in the suite setup
 | | Should Be Equal As Integers | ${actual} | 5
 | | ... | Expected 5 items in navlist, found ${actual}
@@ -68,9 +68,9 @@
 | | 
 | | :FOR | ${lib} | IN | @{libraries}
 | | | ${name} | Get from dictionary | ${lib} | name
-| | | XPath should match X times
+| | | Page Should Contain Element
 | | | ... | //*[@id="right"]//a[./text()='${name}']
-| | | ... | 1
+| | | ... | limit=1
 
 | Main panel shows all library descriptions
 | | [Documentation] 

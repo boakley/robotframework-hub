@@ -1,10 +1,10 @@
 # default arguments; any other argument files should include
 # this file.
 --variable BROWSER:chrome
---variable KEYWORD_DIR:tests/keywords
+--variable KEYWORD_DIR:./tests/keywords
 --variable HOST:localhost
 --variable PORT:7071
-
+--variable PYTHON_BIN:python3
 --outputdir tests/results
 
 --exclude in-progress
