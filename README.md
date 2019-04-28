@@ -26,6 +26,17 @@ line:
     $ python -m rfhub /path/to/test/suite
 ```
 
+## Development 
+
+When running from the command console from the project folder set
+    
+    PYTHONPATH=<project-folder>
+
+When running from PyCharm set the Debug/Run configuration:
+ 
+    Script: /home/mbertens/src/python/robotframework-hub/rfhub/__main__.py
+    Working folder: /home/mbertens/src/python/robotframework-hub
+
 
 ## Websites
 
