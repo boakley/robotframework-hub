@@ -8,7 +8,7 @@
 | | Start the hub with options | --help
 | | Output should contain
 | | ... | --root ROOT
-| | ... | Redirect root url (http://localhost:port/) to this url (eg: /dashboard, /doc)
+| | ... | Redirect root url (http://localhost:port/) to this url\r\n\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (eg: /dashboard, /doc)
 
 | Help for option -l/--library
 | | [Documentation]

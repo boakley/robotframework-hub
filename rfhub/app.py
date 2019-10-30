@@ -1,12 +1,12 @@
 from flask import current_app
-from kwdb import KeywordTable
+from rfhub.kwdb import KeywordTable
 from rfhub.version import __version__
 from robot.utils.argumentparser import ArgFileParser
 from tornado.httpserver import HTTPServer
 from tornado.wsgi import WSGIContainer
 import tornado.ioloop
 import argparse
-import blueprints
+from rfhub import blueprints
 import flask
 import importlib
 import inspect

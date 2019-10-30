@@ -14,6 +14,7 @@ import logging
 import json
 import re
 import sys
+from operator import itemgetter
 
 from watchdog.observers import Observer
 from watchdog.observers.polling import PollingObserver
@@ -33,7 +34,7 @@ I haven't done extensive testing.
 """
 
 class WatchdogHandler(PatternMatchingEventHandler):
-    patterns = ["*.robot", "*.txt", "*.py", "*.tsv"]
+    patterns = ["*.robot", "*.txt", "*.py", "*.tsv", "*.resource"]
     def __init__(self, kwdb, path):
         PatternMatchingEventHandler.__init__(self)
         self.kwdb = kwdb
@@ -67,7 +68,7 @@ class KeywordTable(object):
         self.observer.start()
 
     def add(self, name, monitor=True):
-        """Add a folder, library (.py) or resource file (.robot, .tsv, .txt) to the database
+        """Add a folder, library (.py) or resource file (.robot, .tsv, .txt, .resource) to the database
         """
 
         if os.path.isdir(name):
@@ -190,7 +191,7 @@ class KeywordTable(object):
                         if os.access(path, os.R_OK):
                             self.add_folder(path, watch=False)
                 else:
-                    if (ext in (".xml", ".robot", ".txt", ".py", ".tsv")):
+                    if (ext in (".xml", ".robot", ".txt", ".py", ".tsv", ".resource")):
                         if os.access(path, os.R_OK):
                             self.add(path)
             except Exception as e:
@@ -434,7 +435,7 @@ class KeywordTable(object):
         cursor = self._execute(sql, (pattern,))
         result = [(row[0], row[1], row[2], row[3], row[4])
                   for row in cursor.fetchall()]
-        return list(set(result))
+        return list(sorted(set(result), key=itemgetter(2)))
 
     def reset(self):
         """Remove all data from the database, but leave the tables intact"""
@@ -474,7 +475,8 @@ class KeywordTable(object):
         found_keyword_table = False
         if (name.lower().endswith(".robot") or
             name.lower().endswith(".txt") or
-            name.lower().endswith(".tsv")):
+            name.lower().endswith(".tsv") or
+            name.lower().endswith(".resource")):
 
             with open(name, "r") as f:
                 data = f.read()
