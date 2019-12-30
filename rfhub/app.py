@@ -45,7 +45,6 @@ class RobotHub(object):
         self.app.add_url_rule("/favicon.ico", "favicon", self._favicon)
         self.app.register_blueprint(blueprints.api, url_prefix="/api")
         self.app.register_blueprint(blueprints.doc, url_prefix="/doc")
-        self.app.register_blueprint(blueprints.dashboard, url_prefix="/dashboard")
 
     def start(self):
         """Start the app"""
@@ -92,8 +91,8 @@ class RobotHub(object):
                             help="do not load some common installed keyword libraries, such as BuiltIn")
         parser.add_argument("--poll", action="store_true", default=False,
                             help="use polling behavior instead of events to reload keywords on changes (useful in VMs)")
-        parser.add_argument("--root", action="store", default="/dashboard",
-                            help="Redirect root url (http://localhost:port/) to this url (eg: /dashboard, /doc)")
+        parser.add_argument("--root", action="store", default="/doc",
+                            help="(deprecated) Redirect root url (http://localhost:port/) to this url (eg: /doc)")
         parser.add_argument("--version", action="store_true", default=False,
                             help="Display version number and exit")
         parser.add_argument("path", nargs="*",
