@@ -228,7 +228,7 @@ class KeywordTable(object):
         collection_id = cursor.lastrowid
         return collection_id
 
-    def add_installed_libraries(self, extra_libs = ["Selenium2Library",
+    def add_installed_libraries(self, extra_libs = ["SeleniumLibrary",
                                                     "SudsLibrary",
                                                     "RequestsLibrary"]):
         """Add any installed libraries that we can find
@@ -389,8 +389,8 @@ class KeywordTable(object):
 
         You can limit the search to a single library by specifying
         "in:" followed by the name of the library or resource
-        file. For example, "screenshot in:Selenium2Library" will only
-        search for the word 'screenshot' in the Selenium2Library.
+        file. For example, "screenshot in:SeleniumLibrary" will only
+        search for the word 'screenshot' in the SeleniumLibrary.
 
         """
         pattern = self._glob_to_sql(pattern)

@@ -1,5 +1,5 @@
 *** Settings ***
-| Library | Selenium2Library
+| Library | SeleniumLibrary
 
 | Suite Setup    | Open Browser | ${ROOT} | ${BROWSER}
 | Suite Teardown | Close all browsers
