@@ -28,6 +28,4 @@
 | | ... | stop rfhub
 | | ... | AND | close all browsers
 | | go to | ${ROOT}/
-| | location should be | ${ROOT}/dashboard/
-
-
+| | location should be | ${ROOT}/doc/

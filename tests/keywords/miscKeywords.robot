@@ -13,11 +13,11 @@
 | | ... | Starts rfhub on the port given in the variable \${PORT}
 | | ... | As a side effect this creates a suite variable named \${rfhub process},
 | | ... | which is used by the 'Stop rfhub' keyword.
-| | 
+| |
 | | # Make sure we use the same python executable used by the test runner
 | | ${python}= | Evaluate | sys.executable | sys
 | | ${rfhub process}= | Start process | ${python} | -m | rfhub | @{options}
-| | sleep | 2 seconds | # give the server a chance to start
+| | sleep | 5 seconds | # give the server a chance to start
 | | Set suite variable | ${rfhub process}
 | | Wait until keyword succeeds | 20 seconds | 1 second
 | | ... | Verify URL is reachable | /ping
@@ -25,7 +25,7 @@
 | Stop rfhub
 | | [Documentation]
 | | ... | Stops the rfhub process created by "Start rfhub"
-| | 
+| |
 | | Terminate Process | ${rfhub process}
 | | ${result}= | Get process result
 | | Run keyword if | len('''${result.stderr}''') > 0

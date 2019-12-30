@@ -11,7 +11,7 @@
 | ${ROOT} | http://${HOST}:${PORT}
 
 *** Test Cases ***
-| Base URL 
+| Base URL
 | | [Documentation]
 | | ... | Objective: verify base url returns a page
 | | [Tags] | smoke
@@ -43,7 +43,7 @@
 | | [Documentation]
 | | ... | Objective: visit a bookmarked search page and verify that
 | | ... | the right number of search terms was found
-| | ... | 
+| | ... |
 | | ... | This test assumes the "Easter" library is installed.
 | | [Tags] | smoke
 | |
@@ -65,10 +65,10 @@
 | | [Documentation]
 | | ... | Objective: validate that we get the proper number of rows in
 | | ... | the table of keywords
-| | 
+| |
 | | Go to | ${ROOT}/doc
 | | Search for | -xyzzy-
-| | ${count}= | Get matching xpath count | xpath=//table[@id='keyword-table']/tbody/tr
+| | ${count}= | Get element count | xpath://table[@id='keyword-table']/tbody/tr
 | | Should be equal as integers | ${count} | 0
 | | ... | Expected zero rows in the table body, got ${count} instead
 
@@ -76,22 +76,22 @@
 | | [Documentation]
 | | ... | Objective: validate that we get the proper number of rows in
 | | ... | the table of keywords
-| | 
+| |
 | | Go to | ${ROOT}/doc
 | | Search for | none shall pass
-| | ${count}= | Get matching xpath count | xpath=//table[@id='keyword-table']/tbody/tr
-| | Should be equal as integers | ${count} | 1 
+| | ${count}= | Get element count | xpath://table[@id='keyword-table']/tbody/tr
+| | Should be equal as integers | ${count} | 1
 | | ... | Expected one row in the table body, got ${count} instead
 
 | Correct number of search results - several results
 | | [Documentation]
 | | ... | Objective: validate that we get the proper number of rows in
 | | ... | the table of keywords
-| | 
+| |
 | | Go to | ${ROOT}/doc
 | | # this should find two results, from our own miscKeywords file
 | | Search for | rfhub
-| | ${count}= | Get matching xpath count | xpath=//table[@id='keyword-table']/tbody/tr
+| | ${count}= | Get element count | xpath://table[@id='keyword-table']/tbody/tr
 | | Should be equal as integers | ${count} | 2
 | | ... | Expected two rows in the table body, got ${count} instead
 
@@ -99,7 +99,7 @@
 | | [Documentation]
 | | ... | Objective: verify that the keyword search URL works
 | | [Tags] | smoke
-| | 
+| |
 | | Go to | ${ROOT}/doc
 | | Search for | none shall pass
 | | Page should contain | Searching for 'none shall pass' found 1 keywords
@@ -122,10 +122,10 @@
 
 | Clicking search result link shows keyword
 | | [Documentation]
-| | ... | Objective: make sure that clicking a link causes the 
-| | ... | correct library to be displayed and the clicked-on 
+| | ... | Objective: make sure that clicking a link causes the
+| | ... | correct library to be displayed and the clicked-on
 | | ... | keyword is scrolled into view
-| | 
+| |
 | | Go to | ${ROOT}/doc
 | | Search for | none shall pass
 | | Click link | link=None Shall Pass
@@ -147,4 +147,3 @@
 | | # until it has a chance to start working
 | | Sleep | 500 ms
 | | Wait Until Element Is Visible | id=result-count
-
