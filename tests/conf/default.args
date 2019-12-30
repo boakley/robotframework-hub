@@ -1,5 +1,6 @@
 # default arguments; any other argument files should include
 # this file.
+--pythonpath .
 --variable BROWSER:chrome
 --variable KEYWORD_DIR:tests/keywords
 --variable HOST:localhost
