@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.0 - 2019-12-29
+- Now requires python 3 to run
+- Upgraded Jinja2 due to security vulnerability
+- deprecated --root option; /doc is now the default root
+
+### Issues closed
+- Issue #78 - Need to support python3
+
 ## 0.8.3 - 2015-06-26
 
 ### Issues closed
