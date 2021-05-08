@@ -152,8 +152,7 @@ class KeywordTable(object):
             # FIXME: figure out the path to the library file
             collection_id = self.add_collection(None, libdoc.name, libdoc.type,
                                                 libdoc.doc, libdoc.version,
-                                                libdoc.scope, libdoc.named_args,
-                                                libdoc.doc_format)
+                                                libdoc.scope)
             self._load_keywords(collection_id, libdoc=libdoc)
 
     def add_folder(self, dirname, watch=True):
@@ -521,7 +520,7 @@ class KeywordTable(object):
         sqlite database we'll make it json we can can convert it back
         to a list later.
         """
-        argstring = json.dumps(args)
+        argstring = json.dumps(args.__dict__)
         self.db.execute("""
             INSERT INTO keyword_table
                 (collection_id, name, doc, args)
