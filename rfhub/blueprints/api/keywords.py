@@ -4,7 +4,7 @@ This provides the view functions for the /api/keywords endpoints
 
 import flask
 from flask import current_app
-from robot.libdocpkg.htmlwriter import DocToHtml
+from robot.libdocpkg.htmlutils import DocToHtml
 
 class ApiEndpoint(object):
     def __init__(self, blueprint):

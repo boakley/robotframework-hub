@@ -151,5 +151,5 @@ def get_navpanel_data(kwdb):
 
 def doc_to_html(doc, doc_format="ROBOT"):
     """Convert documentation to HTML"""
-    from robot.libdocpkg.htmlwriter import DocToHtml
+    from robot.libdocpkg.htmlutils import DocToHtml
     return DocToHtml(doc_format)(doc)
