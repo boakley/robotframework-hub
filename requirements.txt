@@ -8,7 +8,7 @@ itsdangerous
 tornado
 pathtools3
 requests
-robotframework>=2.8.5
+robotframework>=2.8.5,<=3.2.2
 robotframework-requests
 robotframework-seleniumlibrary
 watchdog
