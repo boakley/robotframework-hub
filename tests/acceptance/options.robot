@@ -8,7 +8,8 @@
 | | Start the hub with options | --help
 | | Output should contain
 | | ... | --root ROOT
-| | ... | (deprecated) Redirect root url (http://localhost:port/) to this url
+| | ... | (deprecated) Redirect root url
+| | ... | (http://localhost:port/) to this url
 
 | Help for option -l/--library
 | | [Documentation]

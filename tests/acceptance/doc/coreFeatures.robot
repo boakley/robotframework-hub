@@ -24,8 +24,8 @@
 | | ... | Go to | ${ROOT}/doc/
 | |
 | | ${actual} | Get element count | //*[@id="left"]/ul/li/label
-| | Should Be Equal As Integers | ${actual} | 11
-| | ... | Expected 11 items in navlist, found ${actual}
+| | Should Be Equal As Integers | ${actual} | 8
+| | ... | Expected 8 items in navlist, found ${actual}
 
 | Nav panel shows all libraries
 | | [Documentation]

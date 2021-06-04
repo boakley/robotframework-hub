@@ -77,12 +77,13 @@
 | | 
 | | # the list of keywords will be made up of (id, library, keyword, doc, args)
 | | # tuples; make sure the library is correct for all items
-| | :FOR | ${kw} | IN | @{keywords}
+| | FOR | ${kw} | IN | @{keywords}
 | | | Length should be | ${kw} | 5
 | | | ... | expected the result to contain 4 elements but it did not. 
 | | | Should be equal | ${kw[1]} | twokeywords
 | | | ... | Expected the keyword library name to be "twokeywords" but it was "${kw[0]}"
 | | | ... | values=False
+| | END
 
 | Verify that a query returns the expected keyword names
 | | [Documentation]

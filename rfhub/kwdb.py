@@ -130,11 +130,6 @@ class KeywordTable(object):
         """Add a resource file or library file to the database"""
         libdoc = LibraryDocumentation(path)
         if len(libdoc.keywords) > 0:
-            if libdoc.doc.startswith("Documentation for resource file"):
-                # bah! The file doesn't have an file-level documentation
-                # and libdoc substitutes some placeholder text.
-                libdoc.doc = ""
-
             collection_id = self.add_collection(path, libdoc.name, libdoc.type,
                                                 libdoc.doc, libdoc.version,
                                                 libdoc.scope, libdoc.named_args,
