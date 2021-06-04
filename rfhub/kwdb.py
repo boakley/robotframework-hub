@@ -133,6 +133,11 @@ class KeywordTable(object):
             for keyword in libdoc.keywords:
                 self._add_keyword(collection_id, keyword.name, keyword.doc, keyword.args)
 
+    def removeprefix (self, text, prefix):
+        if text.startswith(prefix):
+            return text[len(prefix):]
+        return text
+
     def add_file(self, path):
         """Add a resource file or library file to the database"""
         libdoc = LibraryDocumentation(path)
@@ -141,7 +146,8 @@ class KeywordTable(object):
             if self.get_top_level_path() is None:
                 src_name = libdoc.name
             else:
-                src_name = libdoc.source.removeprefix(self.get_top_level_path()).removeprefix('/')
+                src_name = self.removeprefix(libdoc.source, self.get_top_level_path())
+                src_name = self.removeprefix(src_name, "/")
 
             collection_id = self.add_collection(path, src_name, libdoc.type,
                                                 libdoc.doc, libdoc.version,
