@@ -59,6 +59,7 @@ class KeywordTable(object):
         self.db = sqlite3.connect(dbfile, check_same_thread=False)
         self.log = logging.getLogger(__name__)
         self._create_db()
+        self.top_level_path = None
 #        self.log.warning("I'm warnin' ya!")
 
         # set up watchdog observer to monitor changes to
@@ -66,6 +67,12 @@ class KeywordTable(object):
         # of keyword files)
         self.observer =  PollingObserver() if poll else Observer()
         self.observer.start()
+
+    def set_top_level_path(self, name):
+        self.top_level_path=name
+
+    def get_top_level_path(self):
+        return self.top_level_path
 
     def add(self, name, monitor=True):
         """Add a folder, library (.py) or resource file (.robot, .tsv, .txt, .resource) to the database
@@ -130,7 +137,13 @@ class KeywordTable(object):
         """Add a resource file or library file to the database"""
         libdoc = LibraryDocumentation(path)
         if len(libdoc.keywords) > 0:
-            collection_id = self.add_collection(path, libdoc.name, libdoc.type,
+
+            if self.get_top_level_path() is None:
+                src_name = libdoc.name
+            else:
+                src_name = libdoc.source.removeprefix(self.get_top_level_path()).removeprefix('/')
+
+            collection_id = self.add_collection(path, src_name, libdoc.type,
                                                 libdoc.doc, libdoc.version,
                                                 libdoc.scope, libdoc.named_args,
                                                 libdoc.doc_format)
