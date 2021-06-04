@@ -151,7 +151,7 @@ class KeywordTable(object):
                                                 libdoc.doc_format)
             self._load_keywords(collection_id, libdoc=libdoc)
 
-    def add_folder(self, dirname, watch=True):
+    def add_folder(self, dirname, watch=True, exclude_patterns=[]):
         """Recursively add all files in a folder to the database
 
         By "all files" I mean, "all files that are resource files
@@ -163,10 +163,8 @@ class KeywordTable(object):
         """
 
         ignore_file = os.path.join(dirname, ".rfhubignore")
-        exclude_patterns = []
         try:
             with open(ignore_file, "r") as f:
-                exclude_patterns = []
                 for line in f.readlines():
                     line = line.strip()
                     if (re.match(r'^\s*#', line)): continue
@@ -180,11 +178,15 @@ class KeywordTable(object):
             path = os.path.join(dirname, filename)
             (basename, ext) = os.path.splitext(filename.lower())
 
+            # Skip names from exclude_patterns
+            if filename in exclude_patterns:
+                continue
+
             try:
                 if (os.path.isdir(path)):
                     if (not basename.startswith(".")):
                         if os.access(path, os.R_OK):
-                            self.add_folder(path, watch=False)
+                            self.add_folder(path, watch=False, exclude_patterns=exclude_patterns)
                 else:
                     if (ext in (".xml", ".robot", ".txt", ".py", ".tsv", ".resource")):
                         if os.access(path, os.R_OK):
