@@ -4,7 +4,13 @@ This provides the view functions for the /api/keywords endpoints
 
 import flask
 from flask import current_app
-from robot.libdocpkg.htmlwriter import DocToHtml
+from robot import __version__ as robot_version
+
+# Handle difference between Robot 3.x and 4.x
+if "3" == robot_version.split('.')[0]:
+    from robot.libdocpkg.htmlwriter import DocToHtml
+else:
+    from robot.libdocpkg.htmlutils import DocToHtml
 
 class ApiEndpoint(object):
     def __init__(self, blueprint):
