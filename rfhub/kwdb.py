@@ -193,13 +193,13 @@ class KeywordTable(object):
             # should probably warn the user?
             pass
 
-        for filename in os.listdir(dirname):
+        # Get list of files and directories, remove matching exclude patterns
+        dirlist = os.listdir(dirname)
+        dirlist = [x for x in dirlist if not any(re.search(r, x) for r in exclude_patterns)]
+
+        for filename in dirlist:
             path = os.path.join(dirname, filename)
             (basename, ext) = os.path.splitext(filename.lower())
-
-            # Skip names from exclude_patterns
-            if filename in exclude_patterns:
-                continue
 
             try:
                 if (os.path.isdir(path)):
