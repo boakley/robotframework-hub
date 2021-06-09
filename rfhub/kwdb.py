@@ -60,6 +60,9 @@ class KeywordTable(object):
         self.log = logging.getLogger(__name__)
         self._create_db()
         self.top_level_path = None
+        self.combined_libdoc = None
+        self.libdoc_path = None
+        self.libdoc_src_name = None
 #        self.log.warning("I'm warnin' ya!")
 
         # set up watchdog observer to monitor changes to
@@ -138,22 +141,28 @@ class KeywordTable(object):
             return text[len(prefix):]
         return text
 
-    def add_file(self, path):
-        """Add a resource file or library file to the database"""
+    def get_file(self, path):
+        """Generate library documentation for specified file"""
         libdoc = LibraryDocumentation(path)
+        if self.get_top_level_path() is None:
+            src_name = libdoc.name
+        else:
+            src_name = self.removeprefix(libdoc.source, self.get_top_level_path())
+            src_name = self.removeprefix(src_name, "/")
+        return path, src_name, libdoc
+
+    def add_combined_file(self, path, src_name, libdoc):
         if len(libdoc.keywords) > 0:
-
-            if self.get_top_level_path() is None:
-                src_name = libdoc.name
-            else:
-                src_name = self.removeprefix(libdoc.source, self.get_top_level_path())
-                src_name = self.removeprefix(src_name, "/")
-
             collection_id = self.add_collection(path, src_name, libdoc.type,
                                                 libdoc.doc, libdoc.version,
                                                 libdoc.scope, libdoc.named_args,
                                                 libdoc.doc_format)
             self._load_keywords(collection_id, libdoc=libdoc)
+
+    def add_file(self, path):
+        """Add a resource file or library file to the database"""
+        (path, src_name, libdoc)   = self.get_file(path)
+        self.add_combined_file (path, src_name, libdoc)
 
     def add_library(self, name):
         """Add a library to the database
@@ -170,7 +179,7 @@ class KeywordTable(object):
                                                 libdoc.doc_format)
             self._load_keywords(collection_id, libdoc=libdoc)
 
-    def add_folder(self, dirname, watch=True, exclude_patterns=[]):
+    def add_folder(self, dirname, watch=True, exclude_patterns=None):
         """Recursively add all files in a folder to the database
 
         By "all files" I mean, "all files that are resource files
@@ -180,24 +189,52 @@ class KeywordTable(object):
 
         N.B. folders with names that begin with '." will be skipped
         """
-
+        __exclude_patterns = exclude_patterns if exclude_patterns is not None else []
+        __initial_combine = self.combined_libdoc
         ignore_file = os.path.join(dirname, ".rfhubignore")
-        try:
-            with open(ignore_file, "r") as f:
-                for line in f.readlines():
-                    line = line.strip()
-                    if (re.match(r'^\s*#', line)): continue
-                    if len(line.strip()) > 0:
-                        exclude_patterns.append(line)
-        except:
-            # should probably warn the user?
-            pass
+        if os.path.exists(ignore_file):
+            try:
+                with open(ignore_file, "r") as f:
+                    for line in f.readlines():
+                        line = line.strip()
+                        if (re.match(r'^\s*#', line)): continue
+                        if len(line) > 0:
+                            __exclude_patterns.append(line)
+            except:
+                pass
+
+        # Support umbrella resource files, i.e. resource file
+        # that collects multiple other resource files and should
+        # be used as include by coding standard.
+        if __initial_combine is None:
+            combine_as_file=None
+            combine_file = os.path.join(dirname, ".rfhubcombine")
+            if os.path.exists(combine_file):
+                try:
+                    with open(combine_file, "r") as f:
+                        for line in f.readlines():
+                            line = line.strip()
+                            if (re.match(r'^\s*#', line)): continue
+                            if len(line.strip()) > 0:
+                                combine_as_file = line
+                                combine_as_path = os.path.join(dirname, combine_as_file)
+                except:
+                    pass
+
+            if combine_as_file is not None:
+                if self.combined_libdoc is None:
+                    if os.path.exists(combine_as_path):
+                        try:
+                            (self.libdoc_path, self.libdoc_src_name, self.combined_libdoc) = self.get_file(combine_as_path)
+                            __exclude_patterns.append(combine_as_file)
+                        except Exception as e:
+                            print("bummer:", str(e))
 
         # Get list of files and directories, remove matching exclude patterns
         dirlist = os.listdir(dirname)
-        dirlist = [x for x in dirlist if not any(re.search(r, x) for r in exclude_patterns)]
+        dirlist = [x for x in dirlist if not any(re.search(r, x) for r in __exclude_patterns)]
 
-        for filename in dirlist:
+        for filename in sorted(dirlist):
             path = os.path.join(dirname, filename)
             (basename, ext) = os.path.splitext(filename.lower())
 
@@ -205,14 +242,28 @@ class KeywordTable(object):
                 if (os.path.isdir(path)):
                     if (not basename.startswith(".")):
                         if os.access(path, os.R_OK):
-                            self.add_folder(path, watch=False, exclude_patterns=exclude_patterns)
+                            self.add_folder(path, watch=False, exclude_patterns=__exclude_patterns)
                 else:
                     if (ext in (".xml", ".robot", ".txt", ".py", ".tsv", ".resource")):
                         if os.access(path, os.R_OK):
-                            self.add(path)
+                            if self.combined_libdoc is None:
+                                self.add(path)
+                            else:
+                                (__path, __src_name, __libdoc) = self.get_file(path)
+                                if __libdoc is not None:
+                                    if len(__libdoc.keywords) > 0:
+                                        self.combined_libdoc.keywords.extend(__libdoc.keywords)
             except Exception as e:
                 # I really need to get the logging situation figured out.
                 print("bummer:", str(e))
+
+        if __initial_combine is None \
+            and self.combined_libdoc is not None:
+            # Write documentation for umbrella resource and reset instance variables
+            self.add_combined_file(self.libdoc_path, self.libdoc_src_name, self.combined_libdoc)
+            self.libdoc_path = None
+            self.libdoc_src_name = None
+            self.combined_libdoc = None
 
         # FIXME:
         # instead of passing a flag around, I should just keep track
