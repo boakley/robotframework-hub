@@ -295,9 +295,7 @@ class KeywordTable(object):
         collection_id = cursor.lastrowid
         return collection_id
 
-    def add_installed_libraries(self, extra_libs = ["SeleniumLibrary",
-                                                    "SudsLibrary",
-                                                    "RequestsLibrary"]):
+    def add_installed_libraries(self):
         """Add any installed libraries that we can find
 
         We do this by looking in the `libraries` folder where
@@ -320,18 +318,33 @@ class KeywordTable(object):
                         # need a better way to log this...
                         self.log.debug("unable to add library: " + str(e))
 
-        # I hate how I implemented this, but I don't think there's
-        # any way to find out which installed python packages are
-        # robot libraries.
-        for library in extra_libs:
-            if (library.lower() not in loaded and
-                not self._should_ignore(library)):
+        # Use information from 'robotframework_*dist-info to get installed Robot libraries
+        basedir = os.path.dirname(robot.__file__)
+        basedir = os.path.dirname(basedir)
+        for filename in os.listdir(basedir):
+            fullpath = os.path.join(basedir, filename)
+            filepath = os.path.join(fullpath, 'top_level.txt')
+            if filename.startswith('robotframework_') \
+                and filename.endswith('.dist-info') \
+                and os.path.exists(filepath):
                 try:
-                    self.add(library)
-                    loaded.append(library.lower())
-                except Exception as e:
-                    self.log.debug("unable to add external library %s: %s" % \
-                                   (library, str(e)))
+                    with open(filepath, "r") as f:
+                        for line in f.readlines():
+                            line = line.strip()
+                            if (re.match(r'^\s*#', line)): continue
+                            if len(line) > 0:
+                                library = line
+                except:
+                    pass
+
+                if (library.lower() not in loaded and
+                    not self._should_ignore(library)):
+                    try:
+                        self.add(library)
+                        loaded.append(library.lower())
+                    except Exception as e:
+                        self.log.debug("unable to add external library %s: %s" % \
+                                       (library, str(e)))
 
     def get_collection(self, collection_id):
         """Get a specific collection"""
