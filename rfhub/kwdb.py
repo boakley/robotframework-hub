@@ -63,7 +63,7 @@ class KeywordTable(object):
         self.combined_libdoc = None
         self.libdoc_path = None
         self.libdoc_src_name = None
-#        self.log.warning("I'm warnin' ya!")
+        # self.log.warning("I'm warnin' ya!")
 
         # set up watchdog observer to monitor changes to
         # keyword files (or more correctly, to directories
@@ -153,9 +153,14 @@ class KeywordTable(object):
 
     def add_combined_file(self, path, src_name, libdoc):
         if len(libdoc.keywords) > 0:
+            try:
+                _named_args = libdoc.named_args
+            except AttributeError as e:
+                # Attribute was dropped in Robot 4.x
+                _named_args = None
             collection_id = self.add_collection(path, src_name, libdoc.type,
                                                 libdoc.doc, libdoc.version,
-                                                libdoc.scope, libdoc.named_args,
+                                                libdoc.scope, _named_args,
                                                 libdoc.doc_format)
             self._load_keywords(collection_id, libdoc=libdoc)
 
@@ -172,10 +177,16 @@ class KeywordTable(object):
         """
         libdoc = LibraryDocumentation(name)
         if len(libdoc.keywords) > 0:
+            try:
+                _named_args = libdoc.named_args
+            except AttributeError as e:
+                # Attribute was dropped in Robot 4.x
+                _named_args = None
+
             # FIXME: figure out the path to the library file
             collection_id = self.add_collection(None, libdoc.name, libdoc.type,
                                                 libdoc.doc, libdoc.version,
-                                                libdoc.scope, libdoc.named_args,
+                                                libdoc.scope, _named_args,
                                                 libdoc.doc_format)
             self._load_keywords(collection_id, libdoc=libdoc)
 
@@ -189,24 +200,24 @@ class KeywordTable(object):
 
         N.B. folders with names that begin with '." will be skipped
         """
-        __exclude_patterns = exclude_patterns if exclude_patterns is not None else []
-        __initial_combine = self.combined_libdoc
-        ignore_file = os.path.join(dirname, ".rfhubignore")
-        if os.path.exists(ignore_file):
+        _exclude_patterns = exclude_patterns if exclude_patterns is not None else []
+        _initial_combine = self.combined_libdoc
+        _ignore_file = os.path.join(dirname, ".rfhubignore")
+        if os.path.exists(_ignore_file):
             try:
-                with open(ignore_file, "r") as f:
+                with open(_ignore_file, "r") as f:
                     for line in f.readlines():
                         line = line.strip()
                         if (re.match(r'^\s*#', line)): continue
                         if len(line) > 0:
-                            __exclude_patterns.append(line)
+                            _exclude_patterns.append(line)
             except:
                 pass
 
         # Support umbrella resource files, i.e. resource file
         # that collects multiple other resource files and should
         # be used as include by coding standard.
-        if __initial_combine is None:
+        if _initial_combine is None:
             combine_as_file=None
             combine_file = os.path.join(dirname, ".rfhubcombine")
             if os.path.exists(combine_file):
@@ -226,13 +237,13 @@ class KeywordTable(object):
                     if os.path.exists(combine_as_path):
                         try:
                             (self.libdoc_path, self.libdoc_src_name, self.combined_libdoc) = self.get_file(combine_as_path)
-                            __exclude_patterns.append(combine_as_file)
+                            _exclude_patterns.append(combine_as_file)
                         except Exception as e:
-                            print("bummer:", str(e))
+                            self.log.error (e.__class__.__name__ + ": Error to read top-level resource file " + combine_as_path + "\n" + str(e))
 
         # Get list of files and directories, remove matching exclude patterns
         dirlist = os.listdir(dirname)
-        dirlist = [x for x in dirlist if not any(re.search(r, x) for r in __exclude_patterns)]
+        dirlist = [x for x in dirlist if not any(re.search(r, x) for r in _exclude_patterns)]
 
         for filename in sorted(dirlist):
             path = os.path.join(dirname, filename)
@@ -242,7 +253,7 @@ class KeywordTable(object):
                 if (os.path.isdir(path)):
                     if (not basename.startswith(".")):
                         if os.access(path, os.R_OK):
-                            self.add_folder(path, watch=False, exclude_patterns=__exclude_patterns)
+                            self.add_folder(path, watch=False, exclude_patterns=_exclude_patterns)
                 else:
                     if (ext in (".xml", ".robot", ".txt", ".py", ".tsv", ".resource")):
                         if os.access(path, os.R_OK):
@@ -255,9 +266,9 @@ class KeywordTable(object):
                                         self.combined_libdoc.keywords.extend(__libdoc.keywords)
             except Exception as e:
                 # I really need to get the logging situation figured out.
-                print("bummer:", str(e))
+                self.log.error (e.__class__.__name__ + ": Error to process " + path + "\n" + str(e))
 
-        if __initial_combine is None \
+        if _initial_combine is None \
             and self.combined_libdoc is not None:
             # Write documentation for umbrella resource and reset instance variables
             self.add_combined_file(self.libdoc_path, self.libdoc_src_name, self.combined_libdoc)
@@ -594,6 +605,24 @@ class KeywordTable(object):
         cursor.execute(*args)
         return cursor
 
+    @staticmethod
+    def _convert_to_dict(obj):
+        """
+          A function takes in a custom object and returns a dictionary representation of the object.
+          This dict representation includes meta data such as the object's module and class names.
+          """
+
+        #  Populate the dictionary with object meta data
+        obj_dict = {
+            "__class__": obj.__class__.__name__,
+            "__module__": obj.__module__
+        }
+
+        #  Populate the dictionary with object properties
+        obj_dict.update(obj.__dict__)
+
+        return obj_dict
+
     def _add_keyword(self, collection_id, name, doc, args):
         """Insert data into the keyword table
 
@@ -601,7 +630,7 @@ class KeywordTable(object):
         sqlite database we'll make it json we can can convert it back
         to a list later.
         """
-        argstring = json.dumps(args)
+        argstring = json.dumps(args, default=self._convert_to_dict)
         self.db.execute("""
             INSERT INTO keyword_table
                 (collection_id, name, doc, args)
