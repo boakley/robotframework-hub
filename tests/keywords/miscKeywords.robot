@@ -39,5 +39,5 @@
 | | [Documentation]
 | | ... | Fail if the given URL doesn't return a status code of 200.
 | | Create Session | tmp | http://localhost:${PORT}
-| | ${response}= | Get Request | tmp | ${url}
+| | ${response}= | Get On Session | tmp | ${url}
 | | Should be equal as integers | ${response.status_code} | 200

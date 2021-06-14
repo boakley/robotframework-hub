@@ -24,8 +24,8 @@
 | | ... | Go to | ${ROOT}/doc/
 | |
 | | ${actual} | Get element count | //*[@id="left"]/ul/li/label
-| | Should Be Equal As Integers | ${actual} | 11
-| | ... | Expected 11 items in navlist, found ${actual}
+| | Should Be Equal As Integers | ${actual} | 8
+| | ... | Expected 8 items in navlist, found ${actual}
 
 | Nav panel shows all libraries
 | | [Documentation]
@@ -36,10 +36,11 @@
 | | ... | Get list of libraries via the API | AND
 | | ... | Go to | ${ROOT}/doc/
 | |
-| | :FOR | ${lib} | IN | @{libraries}
+| | FOR | ${lib} | IN | @{libraries}
 | | | Page should contain element
 | | | ... | //*[@id="left"]/ul/li/label[./text()='${lib["name"]}']
 | | | ... | limit=1
+| | END
 
 | Main panel shows correct number of libraries
 | | [Documentation]
@@ -64,11 +65,12 @@
 | | ... | Get list of libraries via the API | AND
 | | ... | Go to | ${ROOT}/doc
 | |
-| | :FOR | ${lib} | IN | @{libraries}
+| | FOR | ${lib} | IN | @{libraries}
 | | | ${name} | Get from dictionary | ${lib} | name
 | | | Page should contain element
 | | | ... | //*[@id="right"]//a[./text()='${name}']
 | | | ... | limit=1
+| | END
 
 | Main panel shows all library descriptions
 | | [Documentation]
@@ -79,10 +81,11 @@
 | | ... | Go to | ${ROOT}/doc
 | |
 | | ${section}= | Set variable |
-| | :FOR | ${lib} | IN | @{libraries}
+| | FOR | ${lib} | IN | @{libraries}
 | | | ${expected}= | Get from dictionary | ${lib} | synopsis
 | | | ${actual}=   | Get text | //*[@id="right"]//a[text()='${lib["name"]}']/../following-sibling::td
 | | | Should be equal | ${expected} | ${actual}
+| | END
 
 *** Keywords ***
 | Get list of libraries via the API

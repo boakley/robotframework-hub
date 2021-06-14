@@ -87,6 +87,8 @@ class RobotHub(object):
                             help="give the name of a module that exports one or more classes")
         parser.add_argument("-D", "--debug", action="store_true", default=False,
                             help="turn on debug mode")
+        parser.add_argument("-r", "--resourcewithpath", action="store_true", default=False,
+                            help="use relative path to resource")
         parser.add_argument("--no-installed-keywords", action="store_true", default=False,
                             help="do not load some common installed keyword libraries, such as BuiltIn")
         parser.add_argument("--poll", action="store_true", default=False,
@@ -117,6 +119,10 @@ class RobotHub(object):
 
         for path in paths:
             try:
+                if self.args.resourcewithpath:
+                    self.kwdb.set_top_level_path(path)
+                else:
+                    self.kwdb.set_top_level_path(None)
                 self.kwdb.add(path)
             except Exception as e:
                 print("Error adding keywords in %s: %s" % (path, str(e)))
