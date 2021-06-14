@@ -3,10 +3,11 @@
 | ... | Keywords related to the hub API
 | Library | RequestsLibrary
 
+
 *** Keywords ***
 
 | Do a GET on
-| | [Arguments] | ${url}
+| | [Arguments] | ${url} | ${expected_status}=200
 | | [Documentation]
 | | ... | Perform a GET on the given URL.
 | | ... | 
@@ -18,9 +19,9 @@
 | | ... | \| \| \| Do a get on \| http://www.google.com \| blah blah blah
 | | ... | \| \| \| Do a get on \| blah blah blah blah blah 
 | | 
-| | ${response}= | GET Request | rfhub | ${url}
-| | ${JSON}= | Run keyword if | "${response.status_code}" == "200"
-| | ... | To JSON | ${response.content} 
+| | ${response}= | GET On Session | rfhub | ${url} | expected_status=${expected_status}
+| | ${JSON}= | Set Variable If | "${response.status_code}" == "200"
+| | ... | ${response.json()}
 | | Set test variable | ${JSON}
 | | Set test variable | ${response}
 
