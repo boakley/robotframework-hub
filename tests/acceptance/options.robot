@@ -8,7 +8,8 @@
 | | Start the hub with options | --help
 | | Output should contain
 | | ... | --root ROOT
-| | ... | (deprecated) Redirect root url (http://localhost:port/) to this url
+| | ... | (deprecated) Redirect root url
+| | ... | (http://localhost:port/) to this url
 
 | Help for option -l/--library
 | | [Documentation]
@@ -90,6 +91,7 @@
 | | ... | Note: the help will be automatically wrapped, so
 | | ... | you can only search for relatively short strings.
 | |
-| | :FOR | ${pattern} | IN | @{patterns}
+| | FOR | ${pattern} | IN | @{patterns}
 | | | Run keyword if | '''${pattern}''' not in '''${output}'''
 | | | ... | Fail | expected '${pattern}'\n\ \ \ \ \ got '${output}'
+| | END

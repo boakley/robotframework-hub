@@ -116,7 +116,7 @@
 | | [Documentation]
 | | ... | Objective: verify the in: prefix works
 | | Go to | ${ROOT}/doc
-| | Search for | screenshot in:Selenium2Library
+| | Search for | screenshot in:SeleniumLibrary
 | | Page should contain | Searching for 'screenshot' found 4 keywords
 | | ... | Expected results to include exactly 4 keywords, but it didn't
 

@@ -13,7 +13,7 @@ name is the test data. Clever, or too clever? It certainly reads nice.
 *** Keywords ***
 | Verify URL return codes
 | | [Arguments] | ${expected return code}
-| | Do a GET on | ${TEST_NAME}
+| | Do a GET on | ${TEST_NAME} | ${expected return code}
 | | Status code should be | ${expected return code}
 
 *** Test Cases ***
