@@ -1,8 +1,7 @@
-
 Flask==1.1.1
 Jinja2==2.11.3
 MarkupSafe==0.23
-PyYAML==5.1
+PyYAML==5.4
 Werkzeug==0.15.3
 argh==0.25.0
 itsdangerous==0.24
