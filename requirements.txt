@@ -1,15 +1,15 @@
-Flask==1.1.1
-Jinja2==2.11.3
-MarkupSafe==0.23
-PyYAML==5.4
-Werkzeug==0.15.3
-argh==0.25.0
-itsdangerous==0.24
+Flask>=1.1.1
+Jinja2>=2.11.3
+MarkupSafe>=0.23
+PyYAML>=5.4
+Werkzeug>=0.15.3
+argh>=0.25.0
+itsdangerous>=0.24
 tornado>=6.0.3
-pathtools3==0.2.1
-requests==2.20.0
+pathtools3>=0.2.1
+requests>=2.20.0
 robotframework>=2.8.5,<=3.2.2
-robotframework-requests==0.5.0
+robotframework-requests>=0.5.0
 robotframework-seleniumlibrary>=4.0.0
-watchdog==0.9.0
+watchdog>=0.9.0
 # wsgiref==0.1.2
